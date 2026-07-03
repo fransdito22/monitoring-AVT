@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Patient;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+
+class ChildController extends Controller
+{
+    public function index(Request $request)
+    {
+
+
+
+        $parentId = $request->input('parent_id');
+        $therapistId = $request->input('therapist_id');
+
+        $parents = User::query()
+            ->where('role', 'orang_tua')
+            ->select(['id', 'name', 'email'])
+            ->orderBy('name')
+            ->get();
+
+        $therapists = User::query()
+            ->where('role', 'praktisi_avt')
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
+
+        $childrenQuery = Patient::query()
+            ->with(['parent'])
+            ->orderBy('created_at', 'desc');
+
+        if ($parentId) {
+            $childrenQuery->where('parent_id', $parentId);
+        }
+
+        if (!empty($therapistId)) {
+            $childrenQuery->where('therapist_id', $therapistId);
+        }
+
+        $children = $childrenQuery->get()->map(function (Patient $patient) {
+            return [
+                'id' => $patient->id,
+                'name' => $patient->name,
+                'birth_date' => $patient->birth_date,
+                'gender' => $patient->gender,
+                'photo' => $patient->photo,
+                'parent' => [
+                    'id' => $patient->parent?->id,
+                    'name' => $patient->parent?->name,
+                ],
+                'status' => $patient->status,
+                'progress' => $patient->progress,
+                'created_at' => $patient->created_at,
+                'therapist_id' => $patient->therapist_id,
+            ];
+        });
+
+        return Inertia::render('Admin/Children/Children', [
+            'parents' => $parents,
+            'therapists' => $therapists,
+            'children' => $children,
+            'filters' => [
+                'parent_id' => $parentId,
+                'therapist_id' => $therapistId,
+            ],
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+
+        $validated = $request->validate([
+            'parent_id' => ['required', 'exists:users,id'],
+
+
+            'name' => ['required', 'string', 'max:255'],
+            'birth_date' => ['nullable', 'date'],
+            'gender' => ['nullable', 'in:L,P'],
+            'photo' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'in:aktif,dalam_terapi,tinjau_ulang,lulus'],
+            'progress' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'therapist_id' => ['nullable', 'exists:users,id'],
+        ]);
+
+        // Ensure therapist belongs to role praktisi_avt if provided
+        if (!empty($validated['therapist_id'])) {
+            $therapist = User::query()->find($validated['therapist_id']);
+            if (!$therapist || $therapist->role !== 'praktisi_avt') {
+                return back()->withErrors([
+                    'therapist_id' => 'Therapist tidak valid.',
+                ])->withInput();
+            }
+        }
+
+        $therapistId = $validated['therapist_id'] ?? null;
+
+        Patient::create([
+            'name' => $validated['name'],
+            'birth_date' => $validated['birth_date'] ?? null,
+            'gender' => $validated['gender'] ?? null,
+            'photo' => $validated['photo'] ?? null,
+            'parent_id' => $validated['parent_id'],
+            'therapist_id' => $therapistId,
+            'status' => $validated['status'],
+            'progress' => $validated['progress'] ?? 0,
+        ]);
+
+        return Redirect::back()->with('success', 'Anak berhasil ditambahkan');
+    }
+
+    public function updateStatus(Request $request, Patient $patient): RedirectResponse
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:aktif,dalam_terapi,tinjau_ulang,lulus'],
+        ]);
+
+        $patient->update([
+            'status' => $validated['status'],
+        ]);
+
+        return Redirect::back()->with('success', 'Status terapi berhasil diperbarui');
+    }
+}
