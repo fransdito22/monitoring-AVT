@@ -63,7 +63,7 @@ class DashboardController extends Controller
                 ->whereDate('session_date', '>=', now()->toDateString())
                 ->orderBy('session_date')
                 ->limit(5)
-                ->get(['id', 'session_date', 'therapist_id'])
+                ->get(['id', 'session_date'])
                 ->map(function ($lessonPlan) use ($primaryChild) {
                     return [
                         'id' => (string) $lessonPlan->id,
@@ -81,7 +81,7 @@ class DashboardController extends Controller
                 ->orderByDesc('session_date')
                 ->orderByDesc('updated_at')
                 ->limit(5)
-                ->get(['id', 'session_date', 'progress', 'notes'])
+                ->get(['id', 'session_date', 'progress'])
                 ->map(function ($report) {
                     return [
                         'id' => (string) $report->id,

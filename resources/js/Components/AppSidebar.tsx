@@ -23,6 +23,7 @@ import {
     LogOut,
     Sparkles,
     BookText,
+    Calendar1Icon,
 } from "lucide-react";
 
 import { Link, usePage } from "@inertiajs/react";
@@ -69,6 +70,12 @@ const items = {
             match: "/dashboard-admin",
         },
         {
+            title: "Jadwal",
+            url: route("schedule.admin"),
+            icon: Calendar1Icon,
+            match: "/schedule-admin",
+        },
+        {
             title: "Manajemen Akun",
             url: route("admin.users.index"),
             icon: Users,
@@ -82,19 +89,14 @@ const items = {
         },
     ],
 
-    orangtua: [
+    orang_tua: [
         {
             title: "Dashboard",
             url: route("dashboard.orangtua"),
             icon: LayoutDashboard,
             match: "dashboard-orangtua",
         },
-        {
-            title: "Pasien",
-            url: route("patients.orangtua"),
-            icon: Users,
-            match: "patients-orangtua",
-        },
+
         {
             title: "Terapi AVT",
             url: route("schedule.orangtua"),
@@ -109,7 +111,7 @@ const items = {
         },
         {
             title: "Progress Reports",
-            url: route("progress-reports.orangtua"),
+            url: route("progress.orangtua"),
             icon: BookText,
             match: "progress-reports",
         },
@@ -122,8 +124,8 @@ export function AppSidebar() {
     const user = props.auth.user;
 
     const roleKey =
-        user?.role === "orangtua"
-            ? "orangtua"
+        user?.role === "orang_tua"
+            ? "orang_tua"
             : user?.role === "admin"
             ? "admin"
             : "praktisi";
@@ -139,7 +141,7 @@ export function AppSidebar() {
         ?.toUpperCase();
 
     const roleLabel =
-        user?.role === "orangtua"
+        user?.role === "orang_tua"
             ? "Orang Tua"
             : user?.role === "admin"
             ? "Admin"

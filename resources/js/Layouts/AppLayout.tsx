@@ -6,6 +6,8 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Toaster } from "sonner";
+
 export default function AuthenticatedLayout({
     header,
     children,
@@ -27,9 +29,7 @@ export default function AuthenticatedLayout({
                             <SidebarTrigger />
                             {/* Page Header */}
                             {header && (
-                                <div className="px-6 py-4">
-                                    {header}
-                                </div>
+                                <div className="px-6 py-4">{header}</div>
                             )}
                         </div>
                         <div className="flex items-center gap-3">
@@ -49,6 +49,7 @@ export default function AuthenticatedLayout({
 
                     {/* Main Content */}
                     <main className="p-6">{children}</main>
+                    <Toaster richColors position="top-right" />
                 </div>
             </SidebarInset>
         </SidebarProvider>

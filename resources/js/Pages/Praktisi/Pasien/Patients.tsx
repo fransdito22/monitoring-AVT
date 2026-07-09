@@ -231,7 +231,7 @@ export default function Patients({ patients, filters }: Props) {
                                     <div className="mt-6">
                                         <Link
                                             href={route(
-                                                "patients.show",
+                                                "therapy.show",
                                                 patient.id
                                             )}
                                         >
@@ -239,7 +239,7 @@ export default function Patients({ patients, filters }: Props) {
                                                 variant="outline"
                                                 className="w-full rounded-full"
                                             >
-                                                Detail Pasien
+                                                Detail Terapi
                                                 <ArrowRight className="ml-2 h-4 w-4" />
                                             </Button>
                                         </Link>

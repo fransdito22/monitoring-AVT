@@ -1,12 +1,18 @@
 <?php
 
+use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\OrangTua\DashboardController as OrangTuaDashboardController;
+use App\Http\Controllers\OrangTua\ProgressReportsController;
 use App\Http\Controllers\OrangTua\TherapyScheduleController;
 use App\Http\Controllers\Praktisi\DashboardController;
 use App\Http\Controllers\Praktisi\LessonPlanController;
 use App\Http\Controllers\Praktisi\PatientController;
+use App\Http\Controllers\Praktisi\ScheduleController as PraktisiScheduleController;
 use App\Http\Controllers\Praktisi\TesArtikulasiController;
+use App\Http\Controllers\Praktisi\TherapyController;
+
 use App\Http\Controllers\ProfileController;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,7 +29,7 @@ Route::get('/', function () {
 
         return match (Auth::user()->role) {
             'praktisi_avt' => redirect()->route('dashboard.praktisi'),
-            'orangtua' => redirect()->route('dashboard.orangtua'),
+            'orang_tua' => redirect()->route('dashboard.orangtua'),
             'admin' => redirect()->route('dashboard.admin'),
             default => redirect()->route('login'),
         };
@@ -54,26 +60,58 @@ Route::middleware(['auth', 'verified'])->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::get(
-            '/lesson-plans',
-            [LessonPlanController::class, 'index']
-        )->name('lesson-plans.index');
+        // Route::get(
+        //     '/lesson-plans',
+        //     [LessonPlanController::class, 'index']
+        // )->name('lesson-plans.index');
 
-        Route::get(
-            '/lesson-plans/praktisi/add',
-            [LessonPlanController::class, 'create']
-        )->name('lesson-plans.create');
+        // Route::get(
+        //     '/lesson-plans/praktisi/add',
+        //     [LessonPlanController::class, 'create']
+        // )->name('lesson-plans.create');
 
-        Route::post(
-            '/lesson-plans/praktisi',
-            [LessonPlanController::class, 'store']
-        )->name('lesson-plans.store');
+        // Route::post(
+        //     '/lesson-plans/praktisi',
+        //     [LessonPlanController::class, 'store']
+        // )->name('lesson-plans.store');
 
-        Route::get(
-            '/lesson-plans/praktisi/detail/{lessonPlan}',
-            [LessonPlanController::class, 'show']
-        )->name('lesson-plans.show');
+        // Route::get(
+        //     '/lesson-plans/praktisi/detail/{lessonPlan}',
+        //     [LessonPlanController::class, 'show']
+        // )->name('lesson-plans.show');
 
+        /*
+|--------------------------------------------------------------------------
+| LESSON PLAN
+|--------------------------------------------------------------------------
+*/
+
+        Route::prefix('lesson-plans')
+            ->middleware(['auth', 'role:praktisi_avt'])
+            ->controller(LessonPlanController::class)
+            ->group(function () {
+
+                Route::get('/', 'index')
+                    ->name('lesson-plans.index');
+
+                Route::get('/create', 'create')
+                    ->name('lesson-plans.create');
+
+                Route::post('/', 'store')
+                    ->name('lesson-plans.store');
+
+                Route::get('/{lessonPlan}', 'show')
+                    ->name('lesson-plans.show');
+
+                Route::get('/{lessonPlan}/edit', 'edit')
+                    ->name('lesson-plans.edit');
+
+                Route::put('/{lessonPlan}', 'update')
+                    ->name('lesson-plans.update');
+
+                Route::delete('/{lessonPlan}', 'destroy')
+                    ->name('lesson-plans.destroy');
+            });
 
 
         Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -128,8 +166,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::get('/schedule', [\App\Http\Controllers\Praktisi\ScheduleController::class, 'index'])
+        Route::get('/schedule', [PraktisiScheduleController::class, 'index'])
             ->name('schedule.praktisi');
+
+        Route::get('/therapy/{patient}', [TherapyController::class, 'show'])
+            ->name('therapy.show');
     });
 
     /*
@@ -138,7 +179,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('role:orangtua')->group(function () {
+    Route::middleware('role:orang_tua')->group(function () {
 
         Route::get('/dashboard-orangtua', [OrangTuaDashboardController::class, 'index'])
             ->name('dashboard.orangtua');
@@ -158,6 +199,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             '/progress-reports',
             [\App\Http\Controllers\OrangTua\ProgressReportsController::class, 'index']
         )->name('progress-reports.orangtua');
+
+        Route::get('/report-orangtua', [ProgressReportsController::class, 'index'])
+            ->name('progress.orangtua');
     });
 
     /*
@@ -200,7 +244,7 @@ Route::middleware(['auth', 'role:praktisi_avt'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:orangtua'])->group(function () {
+Route::middleware(['auth', 'role:orang_tua'])->group(function () {
 
     Route::get('/profile-orangtua', [ProfileController::class, 'edit'])
         ->name('profile.orangtua.edit');

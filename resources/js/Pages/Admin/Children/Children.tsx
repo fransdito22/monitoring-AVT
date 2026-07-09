@@ -188,13 +188,12 @@ export default function AdminChildren({
                                                 createForm.setData(
                                                     "gender",
                                                     e.target.value as
-                                                        | ""
                                                         | "L"
                                                         | "P"
                                                 )
                                             }
                                         >
-                                            <option value="">(kosong)</option>
+                                            <option value="">Pilih Gender...</option>
                                             <option value="L">L</option>
                                             <option value="P">P</option>
                                         </select>
@@ -214,7 +213,7 @@ export default function AdminChildren({
                                                 )
                                             }
                                         >
-                                            <option value="">(opsional)</option>
+                                            <option value="">Pilih Terapis...</option>
                                             {therapists.map((t) => (
                                                 <option
                                                     key={t.id}

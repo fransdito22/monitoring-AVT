@@ -5,14 +5,41 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['patient_id', 'schedule_id', 'session_date', 'session_number', 'long_term_goal', 'short_term_goal', 'home_program', 'therapist_note'])]
+#[Fillable([
+    'patient_id',
+    'schedule_id',
+    'therapist_id',
+    'session_date',
+    'session_number',
+    'long_term_goal',
+    'short_term_goal',
+    'home_program',
+    'therapist_note',
+    'status',
+])]
 class LessonPlan extends Model
 {
-
-
-    public function lingSixSounds()
+    protected function casts(): array
     {
-        return $this->hasMany(LingSixSoundResult::class);
+        return [
+            'session_date' => 'date',
+            'home_program' => 'array',
+        ];
+    }
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
+    public function therapist()
+    {
+        return $this->belongsTo(User::class, 'therapist_id');
+    }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class);
     }
 
     public function activities()
@@ -25,15 +52,11 @@ class LessonPlan extends Model
         return $this->hasOne(LessonEvaluation::class);
     }
 
-
-
-    public function patient()
+    public function lingSixSounds()
     {
-        return $this->belongsTo(Patient::class);
-    }
-
-    public function schedule()
-    {
-        return $this->belongsTo(Schedule::class);
+        return $this->hasMany(
+            LingSixSoundResult::class,
+            'lesson_plan_id'
+        );
     }
 }
