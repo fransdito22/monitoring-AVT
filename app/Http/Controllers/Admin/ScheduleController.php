@@ -92,6 +92,8 @@ class ScheduleController extends Controller
     public function update(Request $request, Schedule $schedule)
     {
         $validated = $request->validate([
+            'patient_id' => ['required', 'exists:patients,id'],
+            'therapist_id' => ['required', 'exists:users,id'],
             'schedule_date' => ['required', 'date'],
             'schedule_time' => ['required', 'date_format:H:i'],
             'status' => ['required', 'in:scheduled,completed,cancelled'],

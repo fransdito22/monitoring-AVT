@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from "@inertiajs/react";
 import { FormEventHandler } from "react";
+import { toastError, toastSuccess } from "@/lib/sonner";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,20 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Activity, Ear } from "lucide-react";
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } =
-        useForm({
-            name: "",
-            email: "",
-            password: "",
-            password_confirmation: "",
-        });
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
+    });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
         post(route("register"), {
-            onFinish: () =>
-                reset("password", "password_confirmation"),
+            onSuccess: () => toastSuccess("Registrasi berhasil"),
+            onError: () =>
+                toastError("Registrasi gagal", "Cek data yang Anda masukkan"),
+            onFinish: () => reset("password", "password_confirmation"),
         });
     };
 
@@ -55,20 +57,14 @@ export default function Register() {
                             </p>
                         </div>
 
-                        <form
-                            onSubmit={submit}
-                            className="space-y-5"
-                        >
+                        <form onSubmit={submit} className="space-y-5">
                             <div className="space-y-2">
                                 <Label>Nama</Label>
 
                                 <Input
                                     value={data.name}
                                     onChange={(e) =>
-                                        setData(
-                                            "name",
-                                            e.target.value,
-                                        )
+                                        setData("name", e.target.value)
                                     }
                                     placeholder="Masukkan nama"
                                     className="h-11 rounded-xl"
@@ -88,10 +84,7 @@ export default function Register() {
                                     type="email"
                                     value={data.email}
                                     onChange={(e) =>
-                                        setData(
-                                            "email",
-                                            e.target.value,
-                                        )
+                                        setData("email", e.target.value)
                                     }
                                     placeholder="Masukkan email"
                                     className="h-11 rounded-xl"
@@ -111,10 +104,7 @@ export default function Register() {
                                     type="password"
                                     value={data.password}
                                     onChange={(e) =>
-                                        setData(
-                                            "password",
-                                            e.target.value,
-                                        )
+                                        setData("password", e.target.value)
                                     }
                                     placeholder="Masukkan password"
                                     className="h-11 rounded-xl"
@@ -132,13 +122,11 @@ export default function Register() {
 
                                 <Input
                                     type="password"
-                                    value={
-                                        data.password_confirmation
-                                    }
+                                    value={data.password_confirmation}
                                     onChange={(e) =>
                                         setData(
                                             "password_confirmation",
-                                            e.target.value,
+                                            e.target.value
                                         )
                                     }
                                     placeholder="Ulangi password"
@@ -151,9 +139,7 @@ export default function Register() {
                                 className="h-11 w-full rounded-xl"
                                 disabled={processing}
                             >
-                                {processing
-                                    ? "Loading..."
-                                    : "Register"}
+                                {processing ? "Loading..." : "Register"}
                             </Button>
                         </form>
 

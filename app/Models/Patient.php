@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['name', 'birth_date', 'gender', 'photo', 'parent_id', 'therapist_id', 'status', 'progress',])]
+#[Fillable(['name', 'birth_date', 'gender', 'photo', 'user_id', 'parent_id', 'therapist_id', 'status', 'progress',])]
 class Patient extends Model
 {
     public function parent()
@@ -40,4 +40,13 @@ class Patient extends Model
     {
         return $this->tesArtikulasi();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(
+            User::class,
+            'user_id'
+        );
+    }
+
 }

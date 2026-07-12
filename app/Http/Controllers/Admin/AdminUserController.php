@@ -29,7 +29,7 @@ class AdminUserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-            'role' => ['required', 'string', 'in:praktisi_avt,orangtua,admin'],
+            'role' => ['required', 'string', 'in:praktisi_avt,orang_tua,admin'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 
@@ -50,7 +50,7 @@ class AdminUserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
-            'role' => ['required', 'string', 'in:praktisi_avt,orangtua,admin'],
+            'role' => ['required', 'string', 'in:praktisi_avt,orang_tua,admin'],
         ]);
 
         // prevent changing email to one that belongs to another user

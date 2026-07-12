@@ -149,12 +149,12 @@ class TesArtikulasiController extends Controller
                 ->avg('progress');
 
             $patient->update([
-                'progress' => round($patientProgress),
+                'progress' => (int) round($patientProgress),
             ]);
         });
 
         return redirect()
-            ->route('tes-artikulasi.index')
+            ->route('reports.index')
             ->with('success', 'Penilaian berhasil disimpan');
     }
 

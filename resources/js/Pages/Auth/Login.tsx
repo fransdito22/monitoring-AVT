@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from "@inertiajs/react";
 import { FormEventHandler, useState } from "react";
+import { toastError, toastSuccess } from "@/lib/sonner";
 
 import { Button } from "@/components/ui/button";
 
@@ -36,6 +37,9 @@ export default function Login({
         e.preventDefault();
 
         post(route("login"), {
+            onSuccess: () => toastSuccess("Login berhasil"),
+            onError: () =>
+                toastError("Login gagal", "Periksa email dan password Anda"),
             onFinish: () => reset("password"),
         });
     };

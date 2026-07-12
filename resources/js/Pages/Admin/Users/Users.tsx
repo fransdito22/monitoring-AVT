@@ -1,11 +1,18 @@
 import { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AppLayout";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select";
 import {
     Table,
     TableBody,
@@ -14,19 +21,25 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { ShieldCheck, Trash2, RotateCcw, Users, UserPlus } from "lucide-react";
+import {
+    ShieldCheck,
+    Trash2,
+    RotateCcw,
+    Users,
+    UserPlus,
+    Pencil,
+} from "lucide-react";
 
 type User = {
     id: number;
     name: string;
     email: string;
-    role: "praktisi_avt" | "orangtua" | "admin" | string;
+    role: "praktisi_avt" | "orang_tua" | "admin" | string;
     email_verified_at: string | null;
 };
 
 const roleLabel: Record<string, string> = {
     admin: "Admin",
-    orangtua: "Orang Tua",
     orang_tua: "Orang Tua",
     praktisi_avt: "Terapis",
 };
@@ -76,6 +89,28 @@ export default function AdminUsers({ users }: { users: User[] }) {
     const submitReset = (id: number) => {
         resetForm.post(route("admin.users.reset-password", id), {
             onSuccess: () => setResetId(null),
+        });
+    };
+
+    const handleDelete = (user: User) => {
+        if (user.role === "admin") {
+            alert("Tidak diizinkan menghapus akun admin.");
+            return;
+        }
+
+        if (!confirm(`Hapus user "${user.name}"?`)) {
+            return;
+        }
+
+        router.delete(route("admin.users.destroy", user.id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                console.log("User berhasil dihapus");
+            },
+            onError: (errors) => {
+                console.error(errors);
+                alert("Terjadi kesalahan saat menghapus user.");
+            },
         });
     };
 
@@ -205,8 +240,8 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                                     <option value="praktisi_avt">
                                                         praktisi_avt
                                                     </option>
-                                                    <option value="orangtua">
-                                                        orangtua
+                                                    <option value="orang_tua">
+                                                        orang_tua
                                                     </option>
                                                     <option value="admin">
                                                         admin
@@ -232,7 +267,22 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                                 />
                                             </div>
                                         </div>
-
+                                        {Object.keys(createForm.errors).length >
+                                            0 && (
+                                            <div className="rounded-lg border border-red-300 bg-red-50 p-4">
+                                                {Object.entries(
+                                                    createForm.errors
+                                                ).map(([field, message]) => (
+                                                    <p
+                                                        key={field}
+                                                        className="text-sm text-red-600"
+                                                    >
+                                                        <strong>{field}</strong>
+                                                        : {message}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        )}
                                         <div className="flex items-center justify-end gap-2">
                                             <Button
                                                 type="button"
@@ -263,9 +313,7 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                         <TableHead>Nama</TableHead>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Role</TableHead>
-                                        <TableHead className="w-[360px]">
-                                            Aksi
-                                        </TableHead>
+                                        <TableHead>Aksi</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -291,9 +339,19 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                                             }
                                                         />
                                                     ) : (
-                                                        <span className="font-medium">
-                                                            {u.name}
-                                                        </span>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary">
+                                                                {u.name
+                                                                    .charAt(0)
+                                                                    .toUpperCase()}
+                                                            </div>
+
+                                                            <div>
+                                                                <p className="font-medium">
+                                                                    {u.name}
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     )}
                                                 </TableCell>
                                                 <TableCell>
@@ -320,40 +378,54 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                                 </TableCell>
                                                 <TableCell>
                                                     {isEditing ? (
-                                                        <select
-                                                            className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                                                        <Select
                                                             value={
                                                                 updateForm.data
-                                                                    .role as any
+                                                                    .role
                                                             }
-                                                            onChange={(e) =>
+                                                            onValueChange={(
+                                                                value
+                                                            ) =>
                                                                 updateForm.setData(
                                                                     "role",
-                                                                    e.target
-                                                                        .value as any
+                                                                    value as any
                                                                 )
                                                             }
                                                         >
-                                                            <option value="praktisi_avt">
-                                                                praktisi_avt
-                                                            </option>
-                                                            <option value="orangtua">
-                                                                orangtua
-                                                            </option>
-                                                            <option value="admin">
-                                                                admin
-                                                            </option>
-                                                        </select>
+                                                            <SelectTrigger>
+                                                                <SelectValue />
+                                                            </SelectTrigger>
+
+                                                            <SelectContent>
+                                                                <SelectItem value="admin">
+                                                                    Admin
+                                                                </SelectItem>
+                                                                <SelectItem value="praktisi_avt">
+                                                                    Praktisi AVT
+                                                                </SelectItem>
+                                                                <SelectItem value="orang_tua">
+                                                                    Orang Tua
+                                                                </SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
                                                     ) : (
-                                                        <Badge variant="outline">
-                                                            {roleLabel[
-                                                                u.role
-                                                            ] ?? u.role}
+                                                        <Badge
+                                                            className={
+                                                                u.role ===
+                                                                "admin"
+                                                                    ? "bg-red-100 text-red-700"
+                                                                    : u.role ===
+                                                                      "praktisi_avt"
+                                                                    ? "bg-blue-100 text-blue-700"
+                                                                    : "bg-green-100 text-green-700"
+                                                            }
+                                                        >
+                                                            {roleLabel[u.role]}
                                                         </Badge>
                                                     )}
                                                 </TableCell>
-                                                <TableCell>
-                                                    <div className="flex flex-wrap items-center gap-2">
+                                                <TableCell className="w-65">
+                                                    <div className="flex items-center  gap-2">
                                                         {isEditing ? (
                                                             <>
                                                                 <Button
@@ -369,9 +441,10 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                                                 >
                                                                     Simpan
                                                                 </Button>
+
                                                                 <Button
                                                                     size="sm"
-                                                                    variant="secondary"
+                                                                    variant="outline"
                                                                     onClick={() =>
                                                                         setEditingId(
                                                                             null
@@ -384,68 +457,52 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                                         ) : (
                                                             <>
                                                                 <Button
-                                                                    size="sm"
-                                                                    variant="secondary"
+                                                                    size="icon"
+                                                                    variant="outline"
                                                                     onClick={() =>
                                                                         startEdit(
                                                                             u
                                                                         )
                                                                     }
+                                                                    title="Edit User"
                                                                 >
-                                                                    Edit
+                                                                    <Pencil className="h-4 w-4" />
                                                                 </Button>
+
                                                                 <Button
-                                                                    size="sm"
-                                                                    variant="secondary"
+                                                                    size="icon"
+                                                                    variant="outline"
                                                                     onClick={() =>
                                                                         startReset(
                                                                             u
                                                                         )
                                                                     }
+                                                                    title="Reset Password"
                                                                 >
-                                                                    <RotateCcw className="mr-1 h-4 w-4" />
-                                                                    Reset
-                                                                    Password
+                                                                    <RotateCcw className="h-4 w-4" />
+                                                                </Button>
+
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="destructive"
+                                                                    onClick={() =>
+                                                                        handleDelete(
+                                                                            u
+                                                                        )
+                                                                    }
+                                                                    title="Hapus User"
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
                                                                 </Button>
                                                             </>
                                                         )}
-
-                                                        <Button
-                                                            size="sm"
-                                                            variant="destructive"
-                                                            onClick={() => {
-                                                                if (
-                                                                    u.role ===
-                                                                    "admin"
-                                                                ) {
-                                                                    alert(
-                                                                        "Tidak diizinkan menghapus akun admin."
-                                                                    );
-                                                                    return;
-                                                                }
-                                                                if (
-                                                                    !confirm(
-                                                                        "Hapus user ini?"
-                                                                    )
-                                                                )
-                                                                    return;
-                                                                window.location.href =
-                                                                    route(
-                                                                        "admin.users.destroy",
-                                                                        u.id
-                                                                    );
-                                                            }}
-                                                        >
-                                                            <Trash2 className="mr-1 h-4 w-4" />
-                                                            Hapus
-                                                        </Button>
                                                     </div>
 
                                                     {isResetting && (
-                                                        <div className="mt-3 flex w-full items-center gap-2 rounded-md border bg-muted/30 p-2">
+                                                        <div className="mt-4 rounded-lg border bg-muted/40 p-4 space-y-3">
                                                             <Input
                                                                 type="password"
-                                                                placeholder="Password baru (min 8)"
+                                                                placeholder="Password baru"
                                                                 value={
                                                                     resetForm
                                                                         .data
@@ -459,30 +516,33 @@ export default function AdminUsers({ users }: { users: User[] }) {
                                                                     )
                                                                 }
                                                             />
-                                                            <Button
-                                                                size="sm"
-                                                                onClick={() =>
-                                                                    submitReset(
-                                                                        u.id
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    resetForm.processing
-                                                                }
-                                                            >
-                                                                Update
-                                                            </Button>
-                                                            <Button
-                                                                size="sm"
-                                                                variant="secondary"
-                                                                onClick={() =>
-                                                                    setResetId(
-                                                                        null
-                                                                    )
-                                                                }
-                                                            >
-                                                                Batal
-                                                            </Button>
+
+                                                            <div className="flex justify-end gap-2">
+                                                                <Button
+                                                                    variant="outline"
+                                                                    onClick={() =>
+                                                                        setResetId(
+                                                                            null
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Batal
+                                                                </Button>
+
+                                                                <Button
+                                                                    onClick={() =>
+                                                                        submitReset(
+                                                                            u.id
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        resetForm.processing
+                                                                    }
+                                                                >
+                                                                    Simpan
+                                                                    Password
+                                                                </Button>
+                                                            </div>
                                                         </div>
                                                     )}
                                                 </TableCell>

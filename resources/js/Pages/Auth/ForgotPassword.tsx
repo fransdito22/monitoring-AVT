@@ -1,4 +1,5 @@
 import { Head, useForm } from "@inertiajs/react";
+import { toastError, toastSuccess } from "@/lib/sonner";
 
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -10,20 +11,18 @@ import { Label } from "@/components/ui/label";
 
 import { Activity, Ear } from "lucide-react";
 
-export default function ForgotPassword({
-    status,
-}: {
-    status?: string;
-}) {
-    const { data, setData, post, processing, errors } =
-        useForm({
-            email: "",
-        });
+export default function ForgotPassword({ status }: { status?: string }) {
+    const { data, setData, post, processing, errors } = useForm({
+        email: "",
+    });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        post(route("password.email"));
+        post(route("password.email"), {
+            onSuccess: () => toastSuccess("Link reset dikirim"),
+            onError: () => toastError("Gagal mengirim link reset"),
+        });
     };
 
     return (
@@ -53,10 +52,7 @@ export default function ForgotPassword({
                             </div>
                         )}
 
-                        <form
-                            onSubmit={submit}
-                            className="space-y-5"
-                        >
+                        <form onSubmit={submit} className="space-y-5">
                             <div className="space-y-2">
                                 <Label>Email</Label>
 
@@ -64,10 +60,7 @@ export default function ForgotPassword({
                                     type="email"
                                     value={data.email}
                                     onChange={(e) =>
-                                        setData(
-                                            "email",
-                                            e.target.value,
-                                        )
+                                        setData("email", e.target.value)
                                     }
                                     placeholder="Masukkan email"
                                     className="h-11 rounded-xl"
@@ -85,9 +78,7 @@ export default function ForgotPassword({
                                 className="h-11 w-full rounded-xl"
                                 disabled={processing}
                             >
-                                {processing
-                                    ? "Loading..."
-                                    : "Kirim Link Reset"}
+                                {processing ? "Loading..." : "Kirim Link Reset"}
                             </Button>
                         </form>
                     </CardContent>
