@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\OrangTua\DashboardController as OrangTuaDashboardController;
 use App\Http\Controllers\OrangTua\ProgressReportsController;
+use App\Http\Controllers\OrangTua\ChildProgressController;
 use App\Http\Controllers\OrangTua\TherapyScheduleController;
 use App\Http\Controllers\Praktisi\DashboardController;
 use App\Http\Controllers\Praktisi\LessonPlanController;
@@ -191,16 +192,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/schedule-orangtua', [TherapyScheduleController::class, 'index'])
             ->name('schedule.orangtua');
 
-        Route::get('/child-progress', function () {
-            return Inertia::render('OrangTua/ChildProgress');
-        })->name('child-progress.orangtua');
+        Route::get('/child-progress', [ChildProgressController::class, 'index'])
+            ->name('child-progress.orangtua');
 
         Route::get(
             '/progress-reports',
             [\App\Http\Controllers\OrangTua\ProgressReportsController::class, 'index']
         )->name('progress-reports.orangtua');
 
-        Route::get('/report-orangtua', [ProgressReportsController::class, 'index'])
+        Route::get('/report-orangtua', [\App\Http\Controllers\OrangTua\ProgressReportController::class, 'index'])
             ->name('progress.orangtua');
     });
 

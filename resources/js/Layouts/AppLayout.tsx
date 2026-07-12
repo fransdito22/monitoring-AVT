@@ -49,7 +49,12 @@ export default function AuthenticatedLayout({
 
                     {/* Main Content */}
                     <main className="p-6">{children}</main>
-                    <Toaster richColors position="top-right" />
+                    <Toaster
+                        richColors
+                        closeButton
+                        position="top-right"
+                        duration={3500}
+                    />
                 </div>
             </SidebarInset>
         </SidebarProvider>

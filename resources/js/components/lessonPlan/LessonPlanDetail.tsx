@@ -22,7 +22,6 @@ interface Props {
 
 const SCORE = ["-", "1", "2", "3", "4", "5"];
 
-
 export default function LessonPlanDetail({ lessonPlan }: Props) {
     return (
         <div className="space-y-6">
@@ -43,9 +42,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                     </Link>
                 </Button>
             </div>
-
             {/* Informasi */}
-
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -62,7 +59,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
 
                     <Info
                         label="Terapis"
-                        value={lessonPlan.schedule?.therapist?.name}
+                        value={lessonPlan.schedule?.status ?? "-"}
                     />
 
                     <Info label="Tanggal" value={lessonPlan.session_date} />
@@ -79,9 +76,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                     </div>
                 </CardContent>
             </Card>
-
             {/* Goal */}
-
             <div className="grid gap-6 lg:grid-cols-2">
                 <Card>
                     <CardHeader>
@@ -109,9 +104,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                     </CardContent>
                 </Card>
             </div>
-
             {/* Home Program */}
-
             <Card>
                 <CardHeader>
                     <CardTitle>Home Program</CardTitle>
@@ -133,7 +126,9 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                                     </Badge>
 
                                     {i !==
-                                        lessonPlan.home_program.length - 1 && (
+                                        (lessonPlan.home_program
+                                            ? lessonPlan.home_program.length - 1
+                                            : 0) && (
                                         <Separator className="mt-4" />
                                     )}
                                 </div>
@@ -146,9 +141,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                     )}
                 </CardContent>
             </Card>
-
             {/* Aktivitas */}
-
             <Card>
                 <CardHeader>
                     <CardTitle>Aktivitas Terapi</CardTitle>
@@ -185,9 +178,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                     </div>
                 </CardContent>
             </Card>
-
             {/* Ling */}
-
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -220,9 +211,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                     </div>
                 </CardContent>
             </Card>
-
             {/* Evaluasi */}
-
             <Card>
                 <CardHeader>
                     <CardTitle className="flex gap-2 items-center">
@@ -261,9 +250,7 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                     </div>
                 </CardContent>
             </Card>
-
             {/* Catatan */}
-
             <Card>
                 <CardHeader>
                     <CardTitle className="flex gap-2 items-center">

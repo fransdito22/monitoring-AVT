@@ -13,6 +13,11 @@ interface Props {
 }
 
 export default function Index({ lessonPlans }: Props) {
+    const lessonPlansForTable = lessonPlans.map((lp) => ({
+        ...lp,
+        session_date: lp.session_date ?? "",
+    }));
+
     return (
         <AppLayout>
             <div className="space-y-6">
@@ -32,7 +37,7 @@ export default function Index({ lessonPlans }: Props) {
                     </Button>
                 </div>
 
-                <LessonPlanTable lessonPlans={lessonPlans} />
+                <LessonPlanTable lessonPlans={lessonPlansForTable as any} />
             </div>
         </AppLayout>
     );

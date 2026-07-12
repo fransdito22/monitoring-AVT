@@ -79,7 +79,19 @@ export default function LessonPlanForm({
                 </div>
             </div>
 
-            <FormActions form={form} />
+            {/* FormActions sekarang hanya tombol. Validasi + submit tetap di parent/logic lain. */}
+            <FormActions
+                mode={lessonPlan ? "edit" : "create"}
+                onSubmit={() => {
+                    // sementara: fallback gunakan submit lama (tanpa UX validator belum dipasang di Tahap 1)
+                    if (lessonPlan?.id) {
+                        // useFormForm already contains put/post methods inside `form`
+                        form.put(route("lesson-plans.update", lessonPlan.id));
+                        return;
+                    }
+                    form.post(route("lesson-plans.store"));
+                }}
+            />
         </div>
     );
 }

@@ -30,8 +30,8 @@ interface LingSixSound {
 
 interface LessonPlan {
     id: number;
-    session_date: string;
-    session_number: number;
+    session_date?: string;
+    session_number?: number;
     status: string;
 
     schedule?: Schedule;

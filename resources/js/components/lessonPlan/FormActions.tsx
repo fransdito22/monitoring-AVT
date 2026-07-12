@@ -1,59 +1,42 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-interface VisitOptions {
-    onStart?: () => void;
-    onSuccess?: () => void;
-    onError?: (errors: Record<string, string>) => void;
-    onFinish?: () => void;
-}
-
 interface Props {
-    form: {
-        data: Record<string, any>;
-        post: (url: string, options?: VisitOptions) => void;
-        put: (url: string, options?: VisitOptions) => void;
-    };
+    /**
+     * create/edit label switch.
+     */
     mode?: "create" | "edit";
-    lessonPlanId?: number;
+
+    /**
+     * Parent handles validation + UX + submit.
+     */
+    onSubmit: () => void;
 }
 
-export default function FormActions({
-    form,
-    mode = "create",
-    lessonPlanId,
-}: Props) {
-    const handleSubmit = () => {
-        console.log("Form Data:");
-        console.log(form.data);
-        console.log(JSON.stringify(form.data, null, 2));
+export default function FormActions({ mode = "create", onSubmit }: Props) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-        const options: VisitOptions = {
-            onStart: () => console.log("START"),
-            onSuccess: () => console.log("SUCCESS"),
-            onError: (errors) => console.log("ERROR", errors),
-            onFinish: () => console.log("FINISH"),
-        };
+    const handleClick = () => {
+        if (isSubmitting) return;
 
-        if (mode === "edit") {
-            if (!lessonPlanId) {
-                console.error("lessonPlanId is required for update.");
-                return;
-            }
-
-            form.put(route("lesson-plans.update", lessonPlanId), options);
-            return;
+        setIsSubmitting(true);
+        try {
+            onSubmit();
+        } finally {
+            // Defensive guard: real submit remounts on success,
+            // but we keep a short guard to prevent double click.
+            setTimeout(() => setIsSubmitting(false), 300);
         }
-
-        form.post(route("lesson-plans.store"), options);
     };
 
     return (
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
-            <Button
-                type="button"
-                onClick={handleSubmit}
-            >
-                {mode === "edit" ? "Update Draft" : "Save Draft"}
+            <Button type="button" onClick={handleClick} disabled={isSubmitting}>
+                {isSubmitting
+                    ? "Saving..."
+                    : mode === "edit"
+                    ? "Update Draft"
+                    : "Save Draft"}
             </Button>
         </div>
     );

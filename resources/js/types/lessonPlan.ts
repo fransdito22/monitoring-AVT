@@ -1,4 +1,5 @@
 export interface Activity {
+    id?: number;
     activity_name: string;
     objective: string;
     score: number | null;
@@ -27,16 +28,39 @@ export interface Evaluation {
 }
 
 export interface LessonPlan {
-    id?: number;
+    id: number;
+
+    // status required by LessonPlanTable / LessonPlanDetail
+    status?: string;
+
     schedule_id?: string;
+
+    // session meta
     session_date?: string;
     session_number?: number;
+
+    // goals
+    long_term_goal?: string | null;
+    short_term_goal?: string | null;
+
+    // legacy/compat fields
     goal?: string;
-    therapist_note?: string;
+
+    therapist_note?: string | null;
+
+    // home program
     home_program?: HomeExercise[];
+
+    // relations used by reusable charts/detail
     activities?: Activity[];
     evaluation?: Evaluation;
+
+    // ling six sounds (different naming conventions in codebase)
     ling_six_sounds?: LingSound[];
+    lingSixSounds?: LingSound[];
+
+    // schedule relation (used by LessonPlanDetail)
+    schedule?: Schedule;
 }
 
 export interface Schedule {

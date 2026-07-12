@@ -27,6 +27,11 @@ import {
 } from "lucide-react";
 
 import { Link, usePage } from "@inertiajs/react";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const items = {
     praktisi: [
@@ -97,12 +102,12 @@ const items = {
             match: "dashboard-orangtua",
         },
 
-        {
-            title: "Terapi AVT",
-            url: route("schedule.orangtua"),
-            icon: HeartPulse,
-            match: "schedule-orangtua",
-        },
+        // {
+        //     title: "Terapi AVT",
+        //     url: route("schedule.orangtua"),
+        //     icon: HeartPulse,
+        //     match: "schedule-orangtua",
+        // },
         {
             title: "Child Progress",
             url: route("child-progress.orangtua"),
@@ -156,7 +161,14 @@ export function AppSidebar() {
                         <Ear className="h-5 w-5" />
                     </div>
 
-                    <div className="flex flex-col group-data-[collapsible=icon]:hidden">
+                    <div
+                        className="
+                            flex flex-col
+                            transition-all duration-300 ease-in-out
+                            group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0
+                            group-data-[collapsible=icon]:overflow-hidden
+                        "
+                    >
                         <span className="text-sm font-semibold">
                             Monitoring AVT
                         </span>
@@ -198,9 +210,24 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter className="border-t bg-sidebar">
-                <div className="space-y-3 p-3 group-data-[collapsible=icon]:space-y-2 group-data-[collapsible=icon]:p-2">
+                <div
+                    className="
+                        relative w-full
+                        flex flex-col items-center
+                        space-y-3 px-3 py-3
+                        transition-all duration-300 ease-in-out
+                        group-data-[collapsible=icon]:space-y-2 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-2
+                    "
+                >
                     {/* Info */}
-                    <div className="rounded-xl border bg-sidebar-accent/40 p-3 group-data-[collapsible=icon]:hidden">
+                    <div
+                        className="
+                            w-full rounded-xl border bg-sidebar-accent/40 p-3
+                            transition-all duration-300 ease-in-out
+                            group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:p-0
+                            group-data-[collapsible=icon]:overflow-hidden
+                        "
+                    >
                         <p className="text-xs leading-relaxed text-muted-foreground">
                             Sistem monitoring perkembangan terapi verbal
                             auditori pasien AVT.
@@ -208,14 +235,26 @@ export function AppSidebar() {
                     </div>
 
                     {/* User */}
-                    <div className="flex items-center gap-3 rounded-xl border bg-background p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1.5">
+                    <div
+                        className="
+                            flex w-full items-center gap-3 rounded-xl border bg-background p-2
+                            transition-all duration-300 ease-in-out
+                            group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0
+                        "
+                    >
                         {/* Avatar */}
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9">
                             {initials}
                         </div>
 
                         {/* User Info */}
-                        <div className="flex-1 overflow-hidden group-data-[collapsible=icon]:hidden">
+                        <div
+                            className="
+                                flex-1 overflow-hidden
+                                transition-all duration-300 ease-in-out
+                                group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0
+                            "
+                        >
                             <p className="truncate text-sm font-medium">
                                 {user?.name}
                             </p>
@@ -227,52 +266,78 @@ export function AppSidebar() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
+                    <div
+                        className="
+                            flex w-full items-center justify-center gap-2
+                            group-data-[collapsible=icon]:flex-col
+                        "
+                    >
                         {/* Profile */}
-                        <Link
-                            href={profileUrl}
-                            className="
-                                flex h-9 flex-1 items-center justify-center gap-2
-                                rounded-lg border bg-background px-3 text-sm
-                                transition-colors hover:bg-accent
-                                group-data-[collapsible=icon]:h-9
-                                group-data-[collapsible=icon]:w-9
-                                group-data-[collapsible=icon]:flex-none
-                                group-data-[collapsible=icon]:px-0
-                            "
-                            title="Profile"
-                        >
-                            <User className="hidden h-4 w-4 group-data-[collapsible=icon]:block" />
-                            <span className="group-data-[collapsible=icon]:hidden">
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Link
+                                    href={profileUrl}
+                                    className="
+                                        flex h-9 w-full items-center justify-center gap-2
+                                        rounded-lg border bg-background px-3 text-sm
+                                        transition-all duration-300 ease-in-out
+                                        hover:bg-accent
+                                        group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex-none
+                                    "
+                                    title="Profile"
+                                >
+                                    <User className="h-4 w-4" />
+                                    <span
+                                        className="
+                                            transition-all duration-300 ease-in-out
+                                            group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:overflow-hidden
+                                        "
+                                    >
+                                        Profile
+                                    </span>
+                                </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side="right" align="center">
                                 Profile
-                            </span>
-                        </Link>
+                            </TooltipContent>
+                        </Tooltip>
 
                         {/* Logout */}
-                        <form
-                            method="post"
-                            action={route("logout")}
-                            className="flex-1 group-data-[collapsible=icon]:flex-none"
-                        >
-                            <button
-                                type="submit"
-                                className="
-                                    flex h-9 w-full items-center justify-center gap-2
-                                    rounded-lg border border-destructive/20
-                                    bg-destructive/10 px-3 text-sm text-destructive
-                                    transition-colors hover:bg-destructive/20
-                                    group-data-[collapsible=icon]:h-9
-                                    group-data-[collapsible=icon]:w-9
-                                    group-data-[collapsible=icon]:px-0
-                                "
-                                title="Logout"
-                            >
-                                <LogOut className="hidden h-4 w-4 group-data-[collapsible=icon]:block" />
-                                <span className="group-data-[collapsible=icon]:hidden">
-                                    Logout
-                                </span>
-                            </button>
-                        </form>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <form
+                                    method="post"
+                                    action={route("logout")}
+                                    className="w-full"
+                                >
+                                    <button
+                                        type="submit"
+                                        className="
+                                            flex h-9 w-full items-center justify-center gap-2
+                                            rounded-lg border border-destructive/20
+                                            bg-destructive/10 px-3 text-sm text-destructive
+                                            transition-all duration-300 ease-in-out
+                                            hover:bg-destructive/20
+                                            group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:px-0
+                                        "
+                                        title="Logout"
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                        <span
+                                            className="
+                                                transition-all duration-300 ease-in-out
+                                                group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:overflow-hidden
+                                            "
+                                        >
+                                            Logout
+                                        </span>
+                                    </button>
+                                </form>
+                            </TooltipTrigger>
+                            <TooltipContent side="right" align="center">
+                                Logout
+                            </TooltipContent>
+                        </Tooltip>
                     </div>
                 </div>
             </SidebarFooter>

@@ -1,16 +1,26 @@
-# Implementation checklist
+# TODO - Refactor Dashboard Orang Tua menjadi Modular
 
--   [x] Step 1: therapy.ts
--   [x] Step 2: Show.tsx
--   [x] Step 3: TherapyHeader.tsx
--   [x] Step 4: PatientSummaryCard.tsx
--   [x] Step 5: StatisticCards.tsx
--   [x] Step 6: ProgressChart.tsx (Line Chart)
--   [x] Step 7: ProgressSummary.tsx
--   [x] Step 8: TherapyTabs.tsx
--   [x] Step 9: LessonPlanList.tsx
--   [x] Step 10: LessonPlanCard.tsx
--   [x] Step 11: ReportList.tsx
--   [x] Step 12: ReportCard.tsx
--   [x] Step 13: TherapyTimeline.tsx
--   [x] Step 14: EmptyState.tsx
+## Tahap 1 — Dashboard (Overview)
+
+-   [ ] Buat folder & page baru: `resources/js/Pages/OrangTua/Dashboard/index.tsx`
+-   [ ] Buat komponen card untuk overview:
+    -   [ ] `WelcomeBanner.tsx`
+    -   [ ] `ChildProfileCard.tsx`
+    -   [ ] `TherapySummaryCard.tsx`
+    -   [ ] `CurrentGoalCard.tsx`
+    -   [ ] `NextScheduleCard.tsx`
+-   [ ] Pastikan Dashboard hanya menampilkan:
+    -   Welcome Banner
+    -   Child Profile
+    -   Therapy Summary (Total Session/Completed Session/Current Progress)
+    -   Current Therapy Goal
+    -   Next Therapy Schedule
+-   [ ] Update `app/Http/Controllers/OrangTua/DashboardController.php` agar Inertia render mengarah ke `OrangTua/Dashboard/index`
+-   [ ] Update `routes/web.php` agar `/dashboard-orangtua` merender `OrangTua/Dashboard/index` (konvensi Inertia)
+-   [ ] Jalankan typecheck/build dan pastikan page `/dashboard-orangtua` bisa dirender tanpa error
+
+## Tahap Selanjutnya (Belum dikerjakan)
+
+-   [ ] OrangTua/Therapy - pindahkan Therapy data & UI
+-   [ ] OrangTua/ChildProgress - pindahkan progress monitoring
+-   [ ] OrangTua/ProgressReports - pindahkan list report & filtering/export (jika ada)
