@@ -47,11 +47,10 @@ export function ProgressChart({ chartData }: Props) {
                 <div>
                     <CardTitle className="flex items-center gap-2 text-base text-slate-900">
                         <Activity className="h-5 w-5 text-sky-600" />
-                        Perkembangan Terapi per Sesi
+                        Perkembangan Artikulasi Anak
                     </CardTitle>
                     <p className="mt-1 text-sm text-slate-600">
-                        Grafik menunjukkan perkembangan kemampuan anak pada
-                        setiap sesi terapi.
+                        Grafik menunjukkan perkembangan artikulasi bicara anak selama terapi.
                     </p>
                 </div>
 

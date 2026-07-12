@@ -13,10 +13,12 @@ interface Props {
     onSubmit: () => void;
 }
 
+
 export default function FormActions({ mode = "create", onSubmit }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleClick = () => {
+        
         if (isSubmitting) return;
 
         setIsSubmitting(true);
@@ -28,15 +30,20 @@ export default function FormActions({ mode = "create", onSubmit }: Props) {
             setTimeout(() => setIsSubmitting(false), 300);
         }
     };
+    
 
     return (
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
             <Button type="button" onClick={handleClick} disabled={isSubmitting}>
+                
                 {isSubmitting
+                
                     ? "Saving..."
                     : mode === "edit"
-                    ? "Update Draft"
-                    : "Save Draft"}
+                    ? "Update "
+                    : "Save "
+                    }
+                    
             </Button>
         </div>
     );

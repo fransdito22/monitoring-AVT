@@ -6,8 +6,7 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Toaster } from "sonner";
-
+import ToastBridge from "@/components/ToastBridge";
 export default function AuthenticatedLayout({
     header,
     children,
@@ -20,6 +19,7 @@ export default function AuthenticatedLayout({
 
     return (
         <SidebarProvider>
+            <ToastBridge />
             <AppSidebar />
             <SidebarInset>
                 <div className="min-h-screen bg-background">
@@ -49,12 +49,6 @@ export default function AuthenticatedLayout({
 
                     {/* Main Content */}
                     <main className="p-6">{children}</main>
-                    <Toaster
-                        richColors
-                        closeButton
-                        position="top-right"
-                        duration={3500}
-                    />
                 </div>
             </SidebarInset>
         </SidebarProvider>

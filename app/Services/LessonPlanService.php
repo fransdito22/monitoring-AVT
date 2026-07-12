@@ -77,7 +77,8 @@ class LessonPlanService
                 $lessonPlan = LessonPlan::create([
                     'patient_id'       => $schedule->patient_id,
                     'schedule_id'      => $schedule->id,
-                    'therapist_id'     => $therapistId,
+                    // therapist_id column may not exist on some schema versions
+                    // so avoid inserting it to prevent SQLSTATE[42S22].
                     'session_date'     => $data['session_date'],
                     'session_number'   => $data['session_number'],
                     'long_term_goal'   => $longTermGoal,

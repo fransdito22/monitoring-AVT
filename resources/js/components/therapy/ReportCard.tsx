@@ -3,6 +3,16 @@ import { Progress } from "@/components/ui/progress";
 
 import type { TherapyArticulationReport } from "@/types/therapy";
 
+const formatDate = (date?: string) => {
+    if (!date) return "-";
+
+    return new Intl.DateTimeFormat("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+    }).format(new Date(date));
+};
+
 export function ReportCard({ report }: { report: TherapyArticulationReport }) {
     return (
         <Card className="rounded-2xl border-slate-200 bg-white shadow-sm">
@@ -11,7 +21,7 @@ export function ReportCard({ report }: { report: TherapyArticulationReport }) {
                     <div>
                         <div className="text-xs text-slate-500">Tanggal</div>
                         <div className="text-sm font-semibold text-slate-900">
-                            {report.tanggal ?? "-"}
+                            {formatDate(report.tanggal ?? undefined) ?? "-"}
                         </div>
                     </div>
 

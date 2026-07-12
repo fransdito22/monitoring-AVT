@@ -48,13 +48,12 @@ const LABELS: Record<"m" | "u" | "a" | "i" | "sh" | "s", string> = {
     s: "/s/",
 };
 
-function mapLevelTo01(level: LingSoundLevelRaw): number | null {
-    if (level === null || level === undefined) return null;
+function mapLevel(level: LingSoundLevelRaw): number | null {
+    if (level == null) return null;
     if (typeof level === "boolean") return level ? 1 : 0;
-    if (typeof level === "number") return Number.isFinite(level) ? level : null;
+    if (typeof level === "number") return level;
     return null;
 }
-
 function toHistory(
     lessonPlans: TherapyLessonPlan[] | null | undefined
 ): LingSixSoundHistoryRow[] {
@@ -110,7 +109,7 @@ function toHistory(
 
     const get = (sounds: SoundRow[], match: string): number | null => {
         const found = sounds.find((s) => s.sound === match);
-        return mapLevelTo01(found?.level ?? null);
+        return mapLevel(found?.level ?? null);
     };
 
     return list.map((lp, idx) => {
@@ -167,7 +166,7 @@ export default function LingSixSoundChart({ lessonPlans }: Props) {
                                 stroke="#e2e8f0"
                             />
                             <XAxis dataKey="session" />
-                            <YAxis domain={[0, 1]} />
+                            <YAxis domain={[0, 2]} ticks={[0, 1, 2]} />
                             <Legend />
 
                             <Tooltip
@@ -264,7 +263,8 @@ export default function LingSixSoundChart({ lessonPlans }: Props) {
                                 name="m"
                                 stroke={COLORS.m}
                                 strokeWidth={2}
-                                dot={false}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
                                 connectNulls
                             />
                             <Line
@@ -273,7 +273,8 @@ export default function LingSixSoundChart({ lessonPlans }: Props) {
                                 name="u"
                                 stroke={COLORS.u}
                                 strokeWidth={2}
-                                dot={false}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
                                 connectNulls
                             />
                             <Line
@@ -282,7 +283,8 @@ export default function LingSixSoundChart({ lessonPlans }: Props) {
                                 name="a"
                                 stroke={COLORS.a}
                                 strokeWidth={2}
-                                dot={false}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
                                 connectNulls
                             />
                             <Line
@@ -291,7 +293,8 @@ export default function LingSixSoundChart({ lessonPlans }: Props) {
                                 name="i"
                                 stroke={COLORS.i}
                                 strokeWidth={2}
-                                dot={false}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
                                 connectNulls
                             />
                             <Line
@@ -300,7 +303,8 @@ export default function LingSixSoundChart({ lessonPlans }: Props) {
                                 name="sh"
                                 stroke={COLORS.sh}
                                 strokeWidth={2}
-                                dot={false}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
                                 connectNulls
                             />
                             <Line
@@ -309,7 +313,8 @@ export default function LingSixSoundChart({ lessonPlans }: Props) {
                                 name="s"
                                 stroke={COLORS.s}
                                 strokeWidth={2}
-                                dot={false}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
                                 connectNulls
                             />
                         </LineChart>
