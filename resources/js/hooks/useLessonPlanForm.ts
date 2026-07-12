@@ -200,12 +200,58 @@ export function useLessonPlanForm({ lessonPlan }: Props = {}) {
         url: string,
         method: "post" | "put" = "post"
     ) => {
+        const payload = form.data;
+
+        // Keep logs grouped to make debugging easy
+        // eslint-disable-next-line no-console
+        console.group("=== Lesson Plan Submit ===");
+        // eslint-disable-next-line no-console
+        console.log("URL:", url);
+        // eslint-disable-next-line no-console
+        console.log("Method:", method.toUpperCase());
+        // eslint-disable-next-line no-console
+        console.log("Payload:", payload);
+        // eslint-disable-next-line no-console
+        console.groupEnd();
+
+        const onStart = () => {
+            // eslint-disable-next-line no-console
+            console.log("Request Started");
+        };
+
+        const onSuccess = () => {
+            // eslint-disable-next-line no-console
+            console.log("Request Success");
+        };
+
+        const onError = (errors: Record<string, any>) => {
+            // eslint-disable-next-line no-console
+            console.log("Validation Errors:", errors ?? {});
+        };
+
+        const onFinish = () => {
+            // eslint-disable-next-line no-console
+            console.log("Request Finished");
+        };
+
         if (method === "post") {
-            form.post(url);
+            form.post(url, {
+                preserveScroll: true,
+                onStart,
+                onSuccess,
+                onError,
+                onFinish,
+            });
             return;
         }
 
-        form.put(url);
+        form.put(url, {
+            preserveScroll: true,
+            onStart,
+            onSuccess,
+            onError,
+            onFinish,
+        });
     };
 
     return {

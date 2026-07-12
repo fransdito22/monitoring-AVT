@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
     Sidebar,
     SidebarContent,
@@ -7,6 +9,9 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
     SidebarSeparator,
 } from "@/components/ui/sidebar";
 
@@ -24,6 +29,7 @@ import {
     Sparkles,
     BookText,
     Calendar1Icon,
+    ChevronRight,
 } from "lucide-react";
 
 import { Link, usePage } from "@inertiajs/react";
@@ -80,18 +86,6 @@ const items = {
             icon: Calendar1Icon,
             match: "/schedule-admin",
         },
-        {
-            title: "Manajemen Akun",
-            url: route("admin.users.index"),
-            icon: Users,
-            match: "/admin/users",
-        },
-        {
-            title: "Manajemen Pasien",
-            url: route("admin.children.index"),
-            icon: ClipboardList,
-            match: "/admin/children",
-        },
     ],
 
     orang_tua: [
@@ -123,6 +117,12 @@ const items = {
     ],
 };
 
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
 export function AppSidebar() {
     const { url, props } = usePage();
 
@@ -151,6 +151,12 @@ export function AppSidebar() {
             : user?.role === "admin"
             ? "Admin"
             : "Praktisi AVT";
+
+    const isAdmin = roleKey === "admin";
+
+    const isUsersActive = url.includes("/admin/users");
+    const isPatientsActive = url.includes("/admin/children");
+    const isMasterDataOpen = isUsersActive || isPatientsActive;
 
     return (
         <Sidebar variant="inset" collapsible="icon">
@@ -185,6 +191,7 @@ export function AppSidebar() {
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
+                            {/* Non-master items */}
                             {menuItems.map((item) => {
                                 const Icon = item.icon;
 
@@ -204,6 +211,15 @@ export function AppSidebar() {
                                     </SidebarMenuItem>
                                 );
                             })}
+
+                            {/* Admin Master Data */}
+                            {isAdmin && (
+                                <AdminMasterDataMenu
+                                    isActive={isMasterDataOpen}
+                                    isUsersActive={isUsersActive}
+                                    isPatientsActive={isPatientsActive}
+                                />
+                            )}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
@@ -342,5 +358,78 @@ export function AppSidebar() {
                 </div>
             </SidebarFooter>
         </Sidebar>
+    );
+}
+
+function AdminMasterDataMenu({
+    isActive,
+    isUsersActive,
+    isPatientsActive,
+}: {
+    isActive: boolean;
+    isUsersActive: boolean;
+    isPatientsActive: boolean;
+}) {
+    const [open, setOpen] = React.useState(isActive);
+
+    React.useEffect(() => {
+        if (isActive) setOpen(true);
+    }, [isActive]);
+
+    return (
+        <SidebarMenuItem>
+            <Collapsible open={open} onOpenChange={setOpen}>
+                <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                        tooltip="Master Data"
+                        isActive={isActive}
+                    >
+                        <div className="flex items-center gap-2">
+                            <ChevronRight
+                                className={[
+                                    "h-4 w-4 text-sidebar-accent-foreground transition-transform duration-200 ease-in-out",
+                                    open ? "rotate-90" : "rotate-0",
+                                ].join(" ")}
+                            />
+                            <span>Master Data</span>
+                        </div>
+                    </SidebarMenuButton>
+                </CollapsibleTrigger>
+
+                <CollapsibleContent className="overflow-hidden transition-[max-height,opacity,transform] duration-200 ease-in-out data-state-open:opacity-100 data-state-open:translate-y-0 data-state-closed:opacity-0 data-state-closed:-translate-y-1">
+                    <SidebarMenuSub className="pl-5">
+                        <SidebarMenuSubItem>
+                            <SidebarMenuSubButton
+                                render={
+                                    <Link
+                                        href={route("admin.users.index")}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                }
+                                isActive={isUsersActive}
+                            >
+                                <Users className="h-4 w-4" />
+                                <span>Manajemen Akun</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+
+                        <SidebarMenuSubItem>
+                            <SidebarMenuSubButton
+                                render={
+                                    <Link
+                                        href={route("admin.children.index")}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                }
+                                isActive={isPatientsActive}
+                            >
+                                <ClipboardList className="h-4 w-4" />
+                                <span>Manajemen Pasien</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                </CollapsibleContent>
+            </Collapsible>
+        </SidebarMenuItem>
     );
 }
