@@ -83,7 +83,7 @@ export default function LessonPlanTable({ lessonPlans }: Props) {
     return (
         <Card className="border shadow-sm rounded-2xl">
             <CardHeader>
-                <CardTitle>Daftar Lesson Plan</CardTitle>
+                <CardTitle>Daftar Sesi Terapi</CardTitle>
 
                 <p className="text-sm text-muted-foreground mt-1">
                     Total {lessonPlans.length} Lesson Plan

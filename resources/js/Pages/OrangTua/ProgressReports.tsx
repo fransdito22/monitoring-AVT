@@ -20,7 +20,18 @@ interface Props {
 
 export default function ProgressReports({ reports }: Props) {
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+        header={
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 className="text-xl font-semibold">Dashboard</h2>
+                        <p className="text-sm text-muted-foreground">
+                            Ringkasan statistik dan aktivitas terbaru sistem
+                            Monitoring AVT.
+                        </p>
+                    </div>
+                </div>
+            }>
             <Head title="Progress Terapi" />
 
             <div className="p-6 space-y-6">

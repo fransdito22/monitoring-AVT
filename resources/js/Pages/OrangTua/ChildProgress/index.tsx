@@ -22,11 +22,16 @@ export default function ChildProgressIndex({
 }: ChildProgressIndexProps) {
     return (
         <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight">
-                    Child Progress
-                </h2>
-            }
+        header={
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 className="text-xl font-semibold">Progres Anak</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Ringkasan statistik perkembangan terapi AVT.
+                    </p>
+                </div>
+            </div>
+        }
         >
             <Head title="Child Progress" />
 

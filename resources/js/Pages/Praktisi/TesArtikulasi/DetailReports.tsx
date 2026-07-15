@@ -140,7 +140,7 @@ export default function DetailReports({
         header={
             <div>
                 <h2 className="text-xl font-semibold">
-                    Tambah Tes Artikulasi 
+                    Detail Tes Artikulasi 
                 </h2>
 
                 <p className="text-sm text-muted-foreground">

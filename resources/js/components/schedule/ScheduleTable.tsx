@@ -42,7 +42,7 @@ export default function ScheduleTable({
             <div className="rounded-lg border border-dashed py-16">
                 <div className="text-center">
                     <h3 className="text-lg font-semibold">
-                        No Therapy Schedule
+                        Tidak Ada Jadwal Terapu
                     </h3>
 
                     <p className="mt-2 text-sm text-muted-foreground">

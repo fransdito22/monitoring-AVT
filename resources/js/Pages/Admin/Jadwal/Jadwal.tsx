@@ -84,13 +84,23 @@ export default function Jadwal({ patients, therapists, schedules }: Props) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+        header={
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 className="text-xl font-semibold">Jadwal</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Tambah jadwal sesi terapi AVT.
+                    </p>
+                </div>
+            </div>
+        }>
             <Head title="Therapy Schedule" />
 
             <div className="space-y-6 p-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Therapy Schedule</CardTitle>
+                        <CardTitle>Jadwal Terapi</CardTitle>
                     </CardHeader>
 
                     <CardContent className="space-y-6">

@@ -34,16 +34,16 @@ const labelMap: Partial<Record<string, string>> = {
   short_term_goal: "Tujuan Jangka Pendek",
   activities: "Aktivitas Terapi",
   therapist_note: "Catatan Terapis",
-  home_program: "Home Program",
+  home_program: "Program Rumah",
   evaluation: "Evaluasi",
   ling_six_sounds: "Hasil Ling Six Sound",
 
   // allow direct mapping for nested keys (e.g. activities.0.activity_name)
   // by extracting the first segment.
   "activities.activity_name": "Nama Aktivitas",
-  "activities.score": "Score",
-  "ling_six_sounds.sound": "Sound",
-  "ling_six_sounds.level": "Level",
+  "activities.score": "Skor",
+  "ling_six_sounds.sound": "Suara",
+  "ling_six_sounds.level": "Tingkat",
 };
 
 function normalizeFieldKey(fieldKey: string) {

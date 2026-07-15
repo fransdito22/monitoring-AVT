@@ -14,7 +14,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Baby, UserRoundCheck, UserRoundPlus } from "lucide-react";
+import { Baby, UserPlus2, UserRoundCheck, UserRoundPlus } from "lucide-react";
 
 type Parent = {
     id: number;
@@ -85,7 +85,7 @@ export default function AdminChildren({
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight">
-                    Manajemen Anak
+                    Manajemen Pasien
                 </h2>
             }
         >
@@ -100,7 +100,7 @@ export default function AdminChildren({
                                 halaman.
                             </p>
                             <h1 className="mt-1 text-2xl font-bold tracking-tight">
-                                Halaman Manajemen Anak
+                                Halaman Manajemen Pasien
                             </h1>
                         </div>
                         <Badge
@@ -119,12 +119,12 @@ export default function AdminChildren({
                             <UserRoundPlus className="h-4 w-4" />
                             <CardTitle>Data Anak</CardTitle>
                         </div>
-
                         <Button
                             size="sm"
                             variant={isCreating ? "secondary" : "default"}
                             onClick={() => setIsCreating(!isCreating)}
                         >
+                            <UserPlus2 className="mr-1 h-4 w-4" />
                             {isCreating ? "Tutup Form Anak" : "Tambah Anak"}
                         </Button>
                     </CardHeader>
@@ -187,13 +187,13 @@ export default function AdminChildren({
                                             onChange={(e) =>
                                                 createForm.setData(
                                                     "gender",
-                                                    e.target.value as
-                                                        | "L"
-                                                        | "P"
+                                                    e.target.value as "L" | "P"
                                                 )
                                             }
                                         >
-                                            <option value="">Pilih Gender...</option>
+                                            <option value="">
+                                                Pilih Gender...
+                                            </option>
                                             <option value="L">L</option>
                                             <option value="P">P</option>
                                         </select>
@@ -213,7 +213,9 @@ export default function AdminChildren({
                                                 )
                                             }
                                         >
-                                            <option value="">Pilih Terapis...</option>
+                                            <option value="">
+                                                Pilih Terapis...
+                                            </option>
                                             {therapists.map((t) => (
                                                 <option
                                                     key={t.id}
