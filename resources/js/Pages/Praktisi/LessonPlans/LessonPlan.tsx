@@ -1,5 +1,3 @@
-import AppLayout from "@/Layouts/AppLayout";
-
 import LessonPlanTable from "@/components/lessonPlan/LessonPlanTable";
 
 import { Link } from "@inertiajs/react";
@@ -7,6 +5,7 @@ import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 
 import type { LessonPlan } from "@/types/lessonPlan";
+import AuthenticatedLayout from "@/Layouts/AppLayout";
 
 interface Props {
     lessonPlans: LessonPlan[];
@@ -19,26 +18,29 @@ export default function Index({ lessonPlans }: Props) {
     }));
 
     return (
-        <AppLayout>
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
+        <AuthenticatedLayout
+            header={
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold">Lesson Plan</h1>
-
-                        <p className="text-muted-foreground">
+                        <h2 className="text-xl font-semibold">Sesi Terapi</h2>
+                        <p className="text-sm text-muted-foreground">
                             Kelola seluruh lesson plan terapi AVT.
                         </p>
                     </div>
-
+                </div>
+            }
+        >
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
                     <Button variant="default">
                         <Link href={route("lesson-plans.create")}>
-                            Tambah Lesson Plan
+                            Tambah Sesi Terapi
                         </Link>
                     </Button>
                 </div>
 
                 <LessonPlanTable lessonPlans={lessonPlansForTable as any} />
             </div>
-        </AppLayout>
+        </AuthenticatedLayout>
     );
 }

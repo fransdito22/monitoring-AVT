@@ -38,7 +38,7 @@ export default function ScheduleToolbar({
                     <Input
                         value={search}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        placeholder="Search patient or therapist..."
+                        placeholder="Cari Pasien Atau Terapis"
                         className="pl-9"
                     />
                 </div>
@@ -71,7 +71,7 @@ export default function ScheduleToolbar({
             {/* Right */}
             <Button onClick={onCreate}>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Schedule
+                Tambah Jadwal
             </Button>
         </div>
     );

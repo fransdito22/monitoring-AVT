@@ -42,7 +42,7 @@ import {
 const items = {
     praktisi: [
         {
-            title: "Dashboard",
+            title: "Dasboard",
             url: route("dashboard.praktisi"),
             icon: LayoutDashboard,
             match: "dashboard",
@@ -60,7 +60,7 @@ const items = {
             match: "schedule",
         },
         {
-            title: "Lesson Plan",
+            title: "Sesi Terapi",
             url: route("lesson-plans.index"),
             icon: NotebookPen,
             match: "lesson-plans",
@@ -75,7 +75,7 @@ const items = {
 
     admin: [
         {
-            title: "Dashboard Admin",
+            title: "Dasboard",
             url: route("dashboard.admin"),
             icon: LayoutDashboard,
             match: "/dashboard-admin",
@@ -90,7 +90,7 @@ const items = {
 
     orang_tua: [
         {
-            title: "Dashboard",
+            title: "Dasboard",
             url: route("dashboard.orangtua"),
             icon: LayoutDashboard,
             match: "dashboard-orangtua",
@@ -103,13 +103,13 @@ const items = {
         //     match: "schedule-orangtua",
         // },
         {
-            title: "Child Progress",
+            title: "Perkembangan Anak",
             url: route("child-progress.orangtua"),
             icon: Sparkles,
             match: "child-progress",
         },
         {
-            title: "Progress Reports",
+            title: "Progres Terapi",
             url: route("progress.orangtua"),
             icon: BookText,
             match: "progress-reports",
@@ -180,7 +180,7 @@ export function AppSidebar() {
                         </span>
 
                         <span className="text-xs text-muted-foreground">
-                            Auditory Verbal Therapy
+                            Terapi Verbal Auditori
                         </span>
                     </div>
                 </div>
@@ -300,7 +300,7 @@ export function AppSidebar() {
                                         hover:bg-accent
                                         group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex-none
                                     "
-                                    title="Profile"
+                                    title="Profil"
                                 >
                                     <User className="h-4 w-4" />
                                     <span
@@ -309,12 +309,12 @@ export function AppSidebar() {
                                             group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:overflow-hidden
                                         "
                                     >
-                                        Profile
+                                        Profil
                                     </span>
                                 </Link>
                             </TooltipTrigger>
                             <TooltipContent side="right" align="center">
-                                Profile
+                                Profil
                             </TooltipContent>
                         </Tooltip>
 
@@ -336,7 +336,7 @@ export function AppSidebar() {
                                             hover:bg-destructive/20
                                             group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:px-0
                                         "
-                                        title="Logout"
+                                        title="Keluar"
                                     >
                                         <LogOut className="h-4 w-4" />
                                         <span
@@ -345,13 +345,13 @@ export function AppSidebar() {
                                                 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:overflow-hidden
                                             "
                                         >
-                                            Logout
+                                            Keluar
                                         </span>
                                     </button>
                                 </form>
                             </TooltipTrigger>
                             <TooltipContent side="right" align="center">
-                                Logout
+                                Keluar
                             </TooltipContent>
                         </Tooltip>
                     </div>
@@ -381,7 +381,7 @@ function AdminMasterDataMenu({
             <Collapsible open={open} onOpenChange={setOpen}>
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton
-                        tooltip="Master Data"
+                        tooltip="Data Master"
                         isActive={isActive}
                     >
                         <div className="flex items-center gap-2">
@@ -391,7 +391,7 @@ function AdminMasterDataMenu({
                                     open ? "rotate-90" : "rotate-0",
                                 ].join(" ")}
                             />
-                            <span>Master Data</span>
+                            <span>Data Master</span>
                         </div>
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
