@@ -165,12 +165,10 @@ class DashboardController extends Controller
         }
 
         $currentGoal = null;
-        $homePrograms = [];
+
+        $homeProgramCard = null;
 
         if ($currentGoalLessonPlan) {
-            $homeProgram = $currentGoalLessonPlan->home_program ?? [];
-            $homePrograms = is_array($homeProgram) ? $homeProgram : [];
-
             $currentGoal = [
                 'title' => $currentGoalLessonPlan->long_term_goal ?: 'Target Terapi',
                 'description' => $currentGoalLessonPlan->short_term_goal ?: '',
@@ -178,44 +176,57 @@ class DashboardController extends Controller
                 'long_term_goal' => $currentGoalLessonPlan->long_term_goal,
                 'short_term_goal' => $currentGoalLessonPlan->short_term_goal,
             ];
+
+            $homeProgramRaw = $currentGoalLessonPlan->home_program ?? [];
+            $homeProgramItems = is_array($homeProgramRaw) ? $homeProgramRaw : [];
+
+            $homeProgramCard = [
+                'id' => (string) $currentGoalLessonPlan->id,
+                'sessionDate' => $currentGoalLessonPlan->session_date
+                    ? $currentGoalLessonPlan->session_date->format('Y-m-d')
+                    : null,
+                'sessionNumber' => (string) ($currentGoalLessonPlan->session_number ?? null),
+                'homeProgramItems' => $homeProgramItems,
+                'status' => $currentGoalLessonPlan->status ?? null,
+            ];
         }
 
-        // Next therapy schedule (scheduled, not in_progress)
+        // If there is no currentGoalLessonPlan, keep homeProgramCard as null.
+
+        // Next therapy schedule (from Schedule Admin table)
         $nextSchedule = Schedule::query()
+            ->with([
+                'patient:id,name,photo',
+                'therapist:id,name',
+            ])
             ->where('patient_id', $primaryChild->id)
-            ->where('status', 'scheduled')
-            ->whereDate('schedule_date', '>=', now()->toDateString())
-            ->with('therapist:id,name')
+            ->whereIn('status', ['scheduled', 'pending', 'confirmed'])
             ->orderBy('schedule_date')
             ->orderBy('schedule_time')
             ->first();
 
         $nextSchedulePayload = null;
 
-        // Fallback therapist from lesson plan latest if schedule has no therapist
-        $latestLessonPlanWithSchedule = LessonPlan::query()
-            ->where('patient_id', $primaryChild->id)
-            ->with(['schedule.therapist:id,name', 'schedule'])
-            ->orderByDesc('session_date')
-            ->orderByDesc('created_at')
-            ->first();
-
         if ($nextSchedule) {
-            $fallbackTherapistName = $latestLessonPlanWithSchedule?->schedule?->therapist?->name;
-
             $nextSchedulePayload = [
-                'id' => (string) $nextSchedule->id,
-                'date' => optional($nextSchedule->schedule_date)->format('Y-m-d'),
-                'time' => optional($nextSchedule->schedule_time)->format('H:i'),
-                'therapist' => $nextSchedule->therapist?->name ?? $fallbackTherapistName,
-                'lokasi' => $nextSchedule->notes ?? null,
-                // Extend payload for UI fields
-                'sessionNumber' => (string) ($nextSchedule->lessonPlan?->session_number ?? null),
-                'status' => $nextSchedule->status ?? null,
+                'id' => $nextSchedule->id,
+                'schedule_date' => $nextSchedule->schedule_date,
+                'schedule_time' => $nextSchedule->schedule_time,
+                'end_time' => $nextSchedule->end_time,
+                'status' => $nextSchedule->status,
+                'notes' => $nextSchedule->notes,
+                'patient' => [
+                    'id' => $nextSchedule->patient?->id,
+                    'name' => $nextSchedule->patient?->name,
+                    'photo' => $nextSchedule->patient?->photo,
+                ],
+                'therapist' => [
+                    'id' => $nextSchedule->therapist?->id,
+                    'name' => $nextSchedule->therapist?->name,
+                ],
+                'session_number' => $nextSchedule->session_number,
+                'location' => $nextSchedule->location ?? $nextSchedule->notes,
             ];
-        } else {
-            // If no "scheduled" future schedule exists, keep nextSchedule null.
-            // Frontend will render "Belum ada jadwal terapi berikutnya".
         }
 
         // Recent therapy history (max 5)
@@ -239,11 +250,16 @@ class DashboardController extends Controller
             ->values()
             ->all();
 
+        logger()->info('Next Schedule', [
+            'nextSchedule' => $nextSchedule?->toArray(),
+        ]);
+
         return Inertia::render('OrangTua/Dashboard/index', [
             'childProfile' => $childProfile,
             'statistics' => $statistics,
             'currentGoal' => $currentGoal,
             'nextSchedule' => $nextSchedulePayload,
+            'homeProgramCard' => $homeProgramCard,
         ]);
     }
 }
