@@ -55,11 +55,53 @@ class TherapyService
             'statistics' => $statistics,
             'chartData' => $chartData,
             'insights' => $insights,
+            'sessionEvaluationChart' => $this->buildSessionEvaluationChartData($lessonPlans),
             'tabs' => [
                 'lessonPlans' => $this->buildLessonPlansPayload($lessonPlans),
                 'articulationReports' => $this->buildArticulationReportsPayload($reports),
                 'timeline' => $timeline,
             ],
+        ];
+    }
+
+    public function getChildProgressData(Patient $patient): array
+    {
+        $lessonPlans = LessonPlan::query()
+            ->where('patient_id', $patient->id)
+            ->with([
+                'lingSixSounds',
+                'evaluation',
+                'activities',
+            ])
+            ->orderBy('session_date')
+            ->orderBy('created_at')
+            ->get();
+
+        $lingSixSounds = $lessonPlans
+            ->sortBy(function ($lp) {
+                return $lp->session_date
+                    ? $lp->session_date->toDateString()
+                    : '9999-12-31';
+            })->values()
+            ->all();
+
+        $reports = Report::query()
+            ->with(['details'])
+            ->where('patient_id', $patient->id)
+            ->orderBy('session_date')
+            ->get();
+
+        $chartData = $this->buildChartData($reports);
+        $insights = $this->buildInsights($chartData, $reports);
+        $sessionEvaluationChart = $this->buildSessionEvaluationChartData($lessonPlans);
+        $therapyHistory = $this->buildLessonPlansPayload($lessonPlans);
+
+        return [
+            'progressSummary' => $insights,
+            'progressChart' => $chartData,
+            'lingSixSounds' => $lingSixSounds,
+            'sessionEvaluationChart' => $sessionEvaluationChart,
+            'therapyHistory' => $therapyHistory,
         ];
     }
 
@@ -212,22 +254,22 @@ class TherapyService
     {
         return $lessonPlans
             ->map(function (LessonPlan $lessonPlan) {
-    
+
                 return [
                     'id' => $lessonPlan->id,
-    
+
                     'session_date' => $lessonPlan->session_date,
                     'session_number' => $lessonPlan->session_number,
-    
+
                     'long_term_goal' => $lessonPlan->long_term_goal,
                     'short_term_goal' => $lessonPlan->short_term_goal,
-    
+
                     'home_program' => $lessonPlan->home_program ?? [],
-    
+
                     'therapist_note' => $lessonPlan->therapist_note,
-    
+
                     'status' => $lessonPlan->status,
-    
+
                     'activities' => $lessonPlan->activities
                         ->map(function ($activity) {
                             return [
@@ -240,7 +282,7 @@ class TherapyService
                         })
                         ->values()
                         ->all(),
-    
+
                     'evaluation' => $lessonPlan->evaluation
                         ? [
                             'listening' => $lessonPlan->evaluation->listening,
@@ -250,7 +292,7 @@ class TherapyService
                             'recommendation' => $lessonPlan->evaluation->recommendation,
                         ]
                         : null,
-    
+
                     'lingSixSounds' => $lessonPlan->lingSixSounds
                         ->map(function ($sound) {
                             return [
@@ -267,7 +309,31 @@ class TherapyService
             ->values()
             ->all();
     }
-    
+
+    private function buildSessionEvaluationChartData(Collection $lessonPlans): array
+    {
+        $sorted = $lessonPlans
+            ->filter(fn(LessonPlan $lp) => $lp->evaluation !== null)
+            ->sortBy('session_number')
+            ->values();
+
+        $chart = [];
+
+        foreach ($sorted as $lessonPlan) {
+            $evaluation = $lessonPlan->evaluation;
+
+            $chart[] = [
+                'session' => 'S' . $lessonPlan->session_number,
+                'listening' => (int) ($evaluation->listening ?? 1),
+                'speech' => (int) ($evaluation->speech ?? 1),
+                'language' => (int) ($evaluation->language ?? 1),
+                'attention' => (int) ($evaluation->attention ?? 1),
+            ];
+        }
+
+        return $chart;
+    }
+
     private function buildArticulationReportsPayload(Collection $reports): array
     {
         return $reports

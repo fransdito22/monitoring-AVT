@@ -120,9 +120,20 @@ export const lessonPlanCreateSchema: Schema<LessonPlanCreateData> = {
     }
 
     const evalObj = data.evaluation ?? {};
+
+    // Evaluation fields: make them required to prevent "Column cannot be null" errors
     (["listening", "speech", "language", "attention"] as const).forEach((key) => {
       const v = (evalObj as any)[key];
-      if (isPresent(v)) {
+      const labelMap: Record<string, string> = {
+        listening: "Listening",
+        speech: "Speech",
+        language: "Language",
+        attention: "Attention",
+      };
+      const reqErr = required(`${labelMap[key]} wajib diisi`)(v);
+      if (reqErr) {
+        errors[`evaluation.${key}`] = reqErr;
+      } else {
         const intErr = integer(`Nilai ${key} harus angka bulat`)(v);
         if (intErr) errors[`evaluation.${key}`] = intErr;
         else {
@@ -131,6 +142,10 @@ export const lessonPlanCreateSchema: Schema<LessonPlanCreateData> = {
         }
       }
     });
+
+    if (!isPresent(evalObj.recommendation)) {
+      errors["evaluation.recommendation"] = "Rekomendasi wajib diisi";
+    }
 
     const sounds = data.ling_six_sounds ?? [];
     if (Array.isArray(sounds) && sounds.length) {
@@ -230,7 +245,13 @@ export const lessonPlanEditSchema: Schema<LessonPlanEditData> = {
 
     (["listening", "speech", "language", "attention"] as const).forEach((key) => {
       const v = (data.evaluation as any)[key];
-      const reqErr = required(`Nilai ${key} wajib diisi`)(v);
+      const labelMap: Record<string, string> = {
+        listening: "Listening",
+        speech: "Speech",
+        language: "Language",
+        attention: "Attention",
+      };
+      const reqErr = required(`${labelMap[key]} wajib diisi`)(v);
       if (reqErr) errors[`evaluation.${key}`] = reqErr;
       else {
         const intErr = integer(`Nilai ${key} harus angka bulat`)(v);
@@ -241,6 +262,10 @@ export const lessonPlanEditSchema: Schema<LessonPlanEditData> = {
         }
       }
     });
+
+    if (!isPresent(data.evaluation.recommendation)) {
+        errors["evaluation.recommendation"] = "Rekomendasi wajib diisi";
+    }
 
     return errors;
   },

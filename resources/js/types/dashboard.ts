@@ -34,3 +34,14 @@ export interface DashboardProps {
     recentlyCreatedAccounts: RecentAccount[];
     recentActivities: RecentActivity[];
 }
+
+export interface NextSchedulePayload {
+    id: string;
+    schedule_date: string | null;
+    schedule_time: string | null;
+    end_time: string | null;
+    session_number: string | number | null;
+    status: string | null;
+    location: string | null;
+    therapist: { id: string; name: string } | null;
+}

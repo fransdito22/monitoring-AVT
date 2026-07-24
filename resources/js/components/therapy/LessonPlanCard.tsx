@@ -218,15 +218,36 @@ function EvaluationCard({ lessonPlan }: { lessonPlan: LessonPlan }) {
     );
 }
 
+function normalizeHomeProgram(homeProgram: unknown): HomeProgram[] {
+    if (Array.isArray(homeProgram)) return homeProgram;
+    if (typeof homeProgram === "string") {
+        try {
+            const parsed = JSON.parse(homeProgram);
+            if (Array.isArray(parsed)) return parsed;
+        } catch {
+            // not valid JSON, try as plain text lines
+        }
+        // Legacy fallback: treat each line as a title
+        return homeProgram
+            .split("\n")
+            .map((item) => item.trim())
+            .filter(Boolean)
+            .map((title) => ({ title, instruction: "", frequency: "" }));
+    }
+    return [];
+}
+
 function HomeProgramCard({ lessonPlan }: { lessonPlan: LessonPlan }) {
+    const homePrograms = normalizeHomeProgram(lessonPlan.home_program);
+
     return (
         <Card className="transition-all hover:border-slate-200">
             <CardContent className="p-4">
                 <SectionTitle icon={Home}>Home Program</SectionTitle>
 
-                {lessonPlan.home_program?.length ? (
+                {homePrograms.length ? (
                     <div className="space-y-3">
-                        {lessonPlan.home_program.map((item, index) => (
+                        {homePrograms.map((item, index) => (
                             <div
                                 key={index}
                                 className="rounded-lg border p-3 transition-all hover:border-slate-300"

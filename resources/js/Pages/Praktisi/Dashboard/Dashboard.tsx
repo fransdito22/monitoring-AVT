@@ -83,9 +83,9 @@ export default function Dashboard() {
                 </div>
             }
         >
-            <main className="p-6 lg:p-8">
-                <div className="mb-6">
-                    <h1 className="text-4xl font-bold tracking-tight">
+            <main className="p-4 md:p-6 lg:p-8">
+                <div className="mb-4 md:mb-6">
+                    <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
                         {(() => {
                             const hour = new Date().getHours();
                             if (hour < 11)
@@ -98,18 +98,18 @@ export default function Dashboard() {
                         })()}
                     </h1>
 
-                    <p className="mt-2 text-muted-foreground">
+                    <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                         Lihat progres pasien dan ringkasan hari ini.
                     </p>
                 </div>
 
                 {/* Statistic Cards (4) */}
-                <section className="mb-6">
+                <section className="mb-4 md:mb-6">
                     <StatisticCards summary={summary} />
                 </section>
 
                 {/* 12-column responsive layout */}
-                <div className="grid gap-6 lg:grid-cols-12">
+                <div className="grid gap-4 md:gap-6 lg:grid-cols-12">
                     {/* Row 2 */}
                     <div className="lg:col-span-8">
                         <NextLessonPlanCard nextItem={nextLessonPlan} />

@@ -24,6 +24,7 @@ export default function LessonPlanForm({
 }: LessonPlanFormProps) {
     const {
         form,
+        clientErrors,
         submit,
 
         // Activity
@@ -47,12 +48,17 @@ export default function LessonPlanForm({
         <div className="mx-auto max-w-7xl space-y-6">
             <div className="grid gap-6 lg:grid-cols-3">
                 <div className="space-y-6 lg:col-span-2">
-                    <SessionInformation form={form} schedules={schedules} />
+                    <SessionInformation
+                        form={form}
+                        schedules={schedules}
+                        errors={clientErrors}
+                    />
 
-                    <GoalSection form={form} />
+                    <GoalSection form={form} errors={clientErrors} />
 
                     <ActivitySection
                         form={form}
+                        errors={clientErrors}
                         addActivity={addActivity}
                         removeActivity={removeActivity}
                         updateActivity={updateActivity}
@@ -60,19 +66,25 @@ export default function LessonPlanForm({
 
                     <LingSixSoundSection
                         form={form}
+                        errors={clientErrors}
                         updateLingSound={updateLingSound}
                     />
 
-                    <TherapistNoteSection form={form} />
+                    <TherapistNoteSection form={form} errors={clientErrors} />
                 </div>
 
                 <div className="space-y-6">
-                    <PatientInformation form={form} schedules={schedules} />
+                    <PatientInformation
+                        form={form}
+                        schedules={schedules}
+                        errors={clientErrors}
+                    />
 
-                    <EvaluationSection form={form} />
+                    <EvaluationSection form={form} errors={clientErrors} />
 
                     <HomeProgramSection
                         form={form}
+                        errors={clientErrors}
                         addExercise={addExercise}
                         removeExercise={removeExercise}
                         updateExercise={updateExercise}

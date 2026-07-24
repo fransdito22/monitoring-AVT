@@ -1,4 +1,5 @@
 import { useForm } from "@inertiajs/react";
+import { useMemo } from "react";
 
 import type {
     Activity,
@@ -7,6 +8,7 @@ import type {
     LessonPlanFormData,
     LingSound,
 } from "@/types/lessonPlan";
+import type { LessonPlan } from "@/types/lessonPlan";
 
 import {
     DEFAULT_ACTIVITY,
@@ -15,13 +17,22 @@ import {
     DEFAULT_LING_SOUNDS,
 } from "../types/features/lesson-plan/constants";
 
+import {
+    lessonPlanCreateSchema,
+    lessonPlanEditSchema,
+} from "@/validators/lessonPlan";
+
+import { useFormValidation } from "@/hooks/useFormValidation";
+
 
 interface Props {
-    lessonPlan?: Partial<LessonPlanFormData>;
+    lessonPlan?: (Partial<LessonPlanFormData> & { id?: number });
 }
 
 
 export function useLessonPlanForm({ lessonPlan }: Props = {}) {
+    const isEdit = Boolean(lessonPlan?.id);
+
     const normalizedLingSixSounds = (() => {
         const lp: any = lessonPlan;
 
@@ -80,6 +91,25 @@ export function useLessonPlanForm({ lessonPlan }: Props = {}) {
                 : [{ ...DEFAULT_HOME_EXERCISE }],
 
         therapist_note: lessonPlan?.therapist_note ?? "",
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validation
+    |--------------------------------------------------------------------------
+    */
+
+    const schema = isEdit ? lessonPlanEditSchema : lessonPlanCreateSchema;
+
+    const {
+        clientErrors,
+        validateAll,
+        validateField,
+        onChangeValidate,
+        onBlurValidate,
+    } = useFormValidation(form.data, {
+        schema: schema as { validate: (data: typeof form.data) => Record<string, string | undefined> },
+        realtime: true,
     });
 
     /*
@@ -200,6 +230,15 @@ export function useLessonPlanForm({ lessonPlan }: Props = {}) {
         url: string,
         method: "post" | "put" = "post"
     ) => {
+        // Run frontend validation first
+        const isValid = validateAll();
+
+        if (!isValid) {
+            // eslint-disable-next-line no-console
+            console.log("Frontend validation failed. Blocking submission.");
+            return;
+        }
+
         const payload = form.data;
 
         // Keep logs grouped to make debugging easy
@@ -256,6 +295,10 @@ export function useLessonPlanForm({ lessonPlan }: Props = {}) {
 
     return {
         form,
+        clientErrors,
+        validateField,
+        onChangeValidate,
+        onBlurValidate,
 
         // Activity
         addActivity,

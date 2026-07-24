@@ -26,6 +26,7 @@ import type { LingSound } from "@/types/lessonPlan";
 
 interface Props {
     form: any;
+    errors?: Record<string, string>;
     updateLingSound: (
         index: number,
         field: keyof LingSound,
@@ -74,7 +75,11 @@ const getResponseLabel = (value: number | null) => {
     return RESPONSE_OPTIONS.find((item) => item.value === value)?.label ?? "-";
 };
 
-export default function LingSixSoundSection({ form, updateLingSound }: Props) {
+export default function LingSixSoundSection({
+    form,
+    errors = {},
+    updateLingSound,
+}: Props) {
     return (
         <Card className="rounded-2xl shadow-sm">
             <CardHeader>

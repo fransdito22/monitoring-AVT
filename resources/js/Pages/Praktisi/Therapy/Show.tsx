@@ -13,16 +13,16 @@ import { ProgressChart } from "@/components/therapy/ProgressChart";
 import { ProgressSummary } from "@/components/therapy/ProgressSummary";
 import { TherapyTabs } from "@/components/therapy/TherapyTabs";
 import LingSixSoundChart from "@/components/therapy/LingSixSoundChart";
+import SessionEvaluationChart from "@/components/charts/SessionEvaluationChart";
 
 export default function Show({
     patient,
     statistics,
     chartData,
     insights,
+    sessionEvaluationChart,
     tabs,
 }: TherapyShowProps) {
-    console.log("Lesson Plan:", tabs.lessonPlans);
-    console.log("Lesson Plan pertama:", tabs.lessonPlans[0]);
     return (
         <AuthenticatedLayout
             header={
@@ -53,6 +53,8 @@ export default function Show({
                 <StatisticCards statistics={statistics} />
 
                 <LingSixSoundChart lessonPlans={tabs.lessonPlans} />
+
+                <SessionEvaluationChart data={sessionEvaluationChart} />
 
                 <ProgressChart chartData={chartData} />
 

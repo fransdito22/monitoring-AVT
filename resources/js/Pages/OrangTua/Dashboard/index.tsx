@@ -7,14 +7,11 @@ import { ChildProfileCard } from "./components/ChildProfileCard";
 import { TherapySummaryCard } from "./components/TherapySummaryCard";
 import { CurrentGoalCard } from "./components/CurrentGoalCard";
 import { NextScheduleCard } from "./components/NextScheduleCard";
-
-type NextSchedulePayload = {
-    id: string;
-    date: string | null;
-    time: string | null;
-    therapist: string | null;
-    lokasi: string | null;
-};
+import {
+    HomeProgramCard,
+    type DashboardHomeProgramCardPayload,
+} from "./components/HomeProgramCard";
+import type { NextSchedulePayload } from "@/types/dashboard";
 
 type OrangTuaDashboardProps = {
     childProfile: {
@@ -34,6 +31,7 @@ type OrangTuaDashboardProps = {
         short_term_goal: string | null;
     } | null;
     nextSchedule: NextSchedulePayload | null;
+    homeProgramCard: DashboardHomeProgramCardPayload | null;
 };
 
 export default function OrangTuaDashboard({
@@ -41,6 +39,7 @@ export default function OrangTuaDashboard({
     statistics,
     currentGoal,
     nextSchedule,
+    homeProgramCard,
 }: OrangTuaDashboardProps) {
     return (
         <AuthenticatedLayout
@@ -55,17 +54,22 @@ export default function OrangTuaDashboard({
             <div className="space-y-6">
                 <WelcomeBanner />
 
-                <div className="grid gap-6 xl:grid-cols-12">
-                    <div className="space-y-6 xl:col-span-4">
-                        <ChildProfileCard childProfile={childProfile} statistics={statistics} />
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <div className="space-y-6">
+                        <ChildProfileCard
+                            childProfile={childProfile}
+                            statistics={statistics}
+                        />
 
                         <CurrentGoalCard currentGoal={currentGoal} />
 
                         <NextScheduleCard nextSchedule={nextSchedule} />
                     </div>
 
-                    <div className="space-y-6 xl:col-span-8">
+                    <div className="space-y-6">
                         <TherapySummaryCard statistics={statistics} />
+
+                        <HomeProgramCard homeProgramCard={homeProgramCard} />
                     </div>
                 </div>
             </div>

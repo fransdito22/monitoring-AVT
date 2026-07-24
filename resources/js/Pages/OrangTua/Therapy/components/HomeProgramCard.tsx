@@ -2,11 +2,43 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target } from "lucide-react";
 import type { HomeProgram } from "@/types/therapy";
 
+function normalizeHomeProgram(homeProgram: unknown): HomeProgram[] {
+    if (Array.isArray(homeProgram)) {
+        return homeProgram.filter(
+            (item): item is HomeProgram =>
+                typeof item === "object" && item !== null && "title" in item
+        );
+    }
+    if (typeof homeProgram === "string") {
+        try {
+            const parsed = JSON.parse(homeProgram);
+            if (Array.isArray(parsed)) {
+                return parsed.filter(
+                    (item): item is HomeProgram =>
+                        typeof item === "object" &&
+                        item !== null &&
+                        "title" in item
+                );
+            }
+        } catch {
+            // not valid JSON, treat as plain text
+            return homeProgram
+                .split("\n")
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .map((title) => ({ title, instruction: "", frequency: "" }));
+        }
+    }
+    return [];
+}
+
 export function HomeProgramCard({
     homeProgram,
 }: {
     homeProgram?: HomeProgram[] | null;
 }) {
+    const programs = normalizeHomeProgram(homeProgram);
+
     return (
         <Card className="rounded-2xl shadow-sm">
             <CardHeader>
@@ -16,9 +48,9 @@ export function HomeProgramCard({
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {homeProgram?.length ? (
+                {programs.length > 0 ? (
                     <ul className="space-y-3 text-sm">
-                        {homeProgram.map((item, idx) => (
+                        {programs.map((item, idx) => (
                             <li
                                 key={`${item.title}-${idx}`}
                                 className="rounded-xl border p-3"

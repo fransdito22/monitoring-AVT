@@ -5,25 +5,19 @@ namespace App\Http\Controllers\Praktisi;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LessonPlan\StoreLessonPlanRequest;
 use App\Http\Requests\LessonPlan\UpdateLessonPlanRequest;
-use App\Http\Requests\UpdateLessonPlanRequest as RequestsUpdateLessonPlanRequest;
 use App\Models\LessonPlan;
 use App\Services\LessonPlanService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
+use Inertia\Response;
 
-/**
- * NOTE: Intelephense sometimes can't infer return type from services, so access
- * to `$lessonPlan->id` may be flagged as undefined even though it works at runtime.
- */
 class LessonPlanController extends Controller
 {
     public function __construct(
         protected LessonPlanService $service
     ) {}
 
-    /**
-     * Daftar Lesson Plan
-     */
-    public function index()
+    public function index(): Response
     {
         return Inertia::render(
             'Praktisi/LessonPlans/LessonPlan',
@@ -33,10 +27,7 @@ class LessonPlanController extends Controller
         );
     }
 
-    /**
-     * Form tambah Lesson Plan
-     */
-    public function create()
+    public function create(): Response
     {
         return Inertia::render(
             'Praktisi/LessonPlans/CreateLessonPlan',
@@ -46,28 +37,19 @@ class LessonPlanController extends Controller
         );
     }
 
-    /**
-     * Simpan Lesson Plan
-     */
-    public function store(StoreLessonPlanRequest $request)
+    public function store(StoreLessonPlanRequest $request): RedirectResponse
     {
         $lessonPlan = $this->service->store(
             $request->validated(),
             auth()->id()
         );
 
-        $lessonPlanId = $lessonPlan->getAttribute('id');
-
         return redirect()
-            ->route('lesson-plans.show', $lessonPlanId)
+            ->route('lesson-plans.show', $lessonPlan->id)
             ->with('success', 'Lesson Plan berhasil dibuat.');
     }
 
-
-    /**
-     * Detail Lesson Plan
-     */
-    public function show(LessonPlan $lessonPlan)
+    public function show(LessonPlan $lessonPlan): Response
     {
         return Inertia::render(
             'Praktisi/LessonPlans/ShowLessonPlan',
@@ -77,10 +59,7 @@ class LessonPlanController extends Controller
         );
     }
 
-    /**
-     * Form Edit Lesson Plan
-     */
-    public function edit(LessonPlan $lessonPlan)
+    public function edit(LessonPlan $lessonPlan): Response
     {
         return Inertia::render(
             'Praktisi/LessonPlans/EditLessonPlan',
@@ -91,30 +70,21 @@ class LessonPlanController extends Controller
         );
     }
 
-    /**
-     * Update Lesson Plan
-     */
     public function update(
-        RequestsUpdateLessonPlanRequest $request,
+        UpdateLessonPlanRequest $request,
         LessonPlan $lessonPlan
-    ) {
-        $lessonPlan = $this->service->update(
+    ): RedirectResponse {
+        $this->service->update(
             $lessonPlan,
             $request->validated()
         );
 
-        $updatedLessonPlanId = $lessonPlan->getAttribute('id');
-
         return redirect()
-            ->route('lesson-plans.show', $updatedLessonPlanId)
+            ->route('lesson-plans.show', $lessonPlan->id)
             ->with('success', 'Lesson Plan berhasil diperbarui.');
     }
 
-
-    /**
-     * Hapus Lesson Plan
-     */
-    public function destroy(LessonPlan $lessonPlan)
+    public function destroy(LessonPlan $lessonPlan): RedirectResponse
     {
         $this->service->destroy($lessonPlan);
 

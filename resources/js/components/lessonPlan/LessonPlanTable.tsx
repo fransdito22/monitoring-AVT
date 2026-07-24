@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Table,
@@ -8,6 +9,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Link } from "@inertiajs/react";
+import { Eye } from "lucide-react";
 
 interface Patient {
     id: number;
@@ -92,92 +101,125 @@ export default function LessonPlanTable({ lessonPlans }: Props) {
 
             <CardContent>
                 <div className="rounded-lg border overflow-hidden">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-16">No</TableHead>
-                                <TableHead>Sesi</TableHead>
-                                <TableHead>Tanggal</TableHead>
-                                <TableHead>Pasien</TableHead>
-                                <TableHead>Aktivitas</TableHead>
-                                <TableHead>Ling 6</TableHead>
-                                <TableHead>Evaluasi</TableHead>
-                                <TableHead>Status</TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        <TableBody>
-                            {lessonPlans.length === 0 ? (
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
                                 <TableRow>
-                                    <TableCell
-                                        colSpan={8}
-                                        className="text-center h-32 text-muted-foreground"
-                                    >
-                                        Belum ada Lesson Plan.
-                                    </TableCell>
+                                    <TableHead className="w-16">No</TableHead>
+                                    <TableHead>Sesi</TableHead>
+                                    <TableHead>Tanggal</TableHead>
+                                    <TableHead>Pasien</TableHead>
+                                    <TableHead>Aktivitas</TableHead>
+                                    <TableHead>Ling 6</TableHead>
+                                    <TableHead>Evaluasi</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead className="text-center">
+                                        Aksi
+                                    </TableHead>
                                 </TableRow>
-                            ) : (
-                                lessonPlans.map((plan, index) => (
-                                    <TableRow
-                                        key={plan.id}
-                                        className="hover:bg-muted/40"
-                                    >
-                                        <TableCell>{index + 1}</TableCell>
+                            </TableHeader>
 
-                                        <TableCell>
-                                            {plan.session_number}
-                                        </TableCell>
-
-                                        <TableCell>
-                                            {formatDate(plan.session_date)}
-                                        </TableCell>
-
-                                        <TableCell className="font-medium">
-                                            {plan.schedule?.patient?.name ??
-                                                "-"}
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Badge variant="secondary">
-                                                {plan.activities?.length ?? 0}
-                                            </Badge>
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Badge variant="outline">
-                                                {plan.lingSixSounds?.length ??
-                                                    0}
-                                            </Badge>
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Badge
-                                                variant={
-                                                    plan.evaluation
-                                                        ? "default"
-                                                        : "secondary"
-                                                }
-                                            >
-                                                {plan.evaluation
-                                                    ? "Sudah"
-                                                    : "Belum"}
-                                            </Badge>
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Badge
-                                                variant={statusVariant(
-                                                    plan.status
-                                                )}
-                                            >
-                                                {statusLabel(plan.status)}
-                                            </Badge>
+                            <TableBody>
+                                {lessonPlans.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={9}
+                                            className="text-center h-32 text-muted-foreground"
+                                        >
+                                            Belum ada sesi terapi.
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    lessonPlans.map((plan, index) => (
+                                        <TableRow
+                                            key={plan.id}
+                                            className="hover:bg-muted/40"
+                                        >
+                                            <TableCell>{index + 1}</TableCell>
+
+                                            <TableCell>
+                                                {plan.session_number}
+                                            </TableCell>
+
+                                            <TableCell>
+                                                {formatDate(plan.session_date)}
+                                            </TableCell>
+
+                                            <TableCell className="font-medium">
+                                                {plan.schedule?.patient?.name ??
+                                                    "-"}
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Badge variant="secondary">
+                                                    {plan.activities?.length ??
+                                                        0}
+                                                </Badge>
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Badge variant="outline">
+                                                    {plan.lingSixSounds
+                                                        ?.length ?? 0}
+                                                </Badge>
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Badge
+                                                    variant={
+                                                        plan.evaluation
+                                                            ? "default"
+                                                            : "secondary"
+                                                    }
+                                                >
+                                                    {plan.evaluation
+                                                        ? "Sudah"
+                                                        : "Belum"}
+                                                </Badge>
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Badge
+                                                    variant={statusVariant(
+                                                        plan.status
+                                                    )}
+                                                >
+                                                    {statusLabel(plan.status)}
+                                                </Badge>
+                                            </TableCell>
+
+                                            <TableCell className="text-center">
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger>
+                                                            <Link
+                                                                href={route(
+                                                                    "lesson-plans.show",
+                                                                    plan.id
+                                                                )}
+                                                            >
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="whitespace-nowrap"
+                                                                >
+                                                                    <Eye className="mr-2 h-4 w-4" />
+                                                                    Detail
+                                                                </Button>
+                                                            </Link>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            Lihat Detail
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
             </CardContent>
         </Card>
