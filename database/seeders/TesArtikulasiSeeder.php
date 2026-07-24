@@ -4,34 +4,36 @@ namespace Database\Seeders;
 
 use App\Models\LessonPlan;
 use App\Models\Report;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class TesArtikulasiSeeder extends Seeder
 {
     public function run(): void
     {
-        $lessonPlan = LessonPlan::first();
-        if (!$lessonPlan) {
+        // Get the last completed lesson plan per patient
+        $patients = \App\Models\Patient::all();
+
+        if ($patients->isEmpty()) {
             return;
         }
 
-        $therapist = User::where('role', 'praktisi_avt')->first();
-        if (!$therapist) {
-            return;
-        }
+        foreach ($patients as $patient) {
+            $lastLesson = LessonPlan::where('patient_id', $patient->id)
+                ->where('status', 'completed')
+                ->orderByDesc('session_date')
+                ->first();
 
-        // Tabel `tes_artikulasi` (model Report):
-        // patient_id, therapist_id, session_date, summary
-        Report::updateOrCreate(
-            [
-                'patient_id' => $lessonPlan->patient_id,
-                'therapist_id' => $therapist->id,
-            ],
-            [
-                'session_date' => now()->toDateString(),
-                'summary' => 'Hasil tes artikulasi: Ananda mampu mengucapkan beberapa bunyi dengan cukup jelas. Perlu latihan bertahap untuk meningkatkan konsistensi pengucapan, terutama saat menyambungkan bunyi dalam rangkaian kata.',
-            ]
-        );
+            if (!$lastLesson) {
+                continue;
+            }
+
+            Report::create([
+                'patient_id' => $patient->id,
+                'therapist_id' => $patient->therapist_id,
+                'session_date' => $lastLesson->session_date,
+                'summary' => 'Hasil tes artikulasi menunjukkan perkembangan yang positif. Anak mampu mengucapkan sebagian besar bunyi dengan jelas. Beberapa bunyi masih memerlukan latihan lanjutan untuk mencapai konsistensi yang optimal.',
+                'progress' => rand(60, 85),
+            ]);
+        }
     }
 }

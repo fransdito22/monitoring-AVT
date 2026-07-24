@@ -23,32 +23,34 @@ export default function AuthenticatedLayout({
             <AppSidebar />
             <SidebarInset>
                 <div className="min-h-screen bg-background">
-                    {/* Top Navbar */}
-                    <header className="flex h-16 items-center justify-between border-b bg-background px-6">
-                        <div className="flex items-center gap-4">
+                    {/* Top Navbar - Responsive */}
+                    <header className="flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
+                        <div className="flex items-center gap-2 md:gap-4 min-w-0">
                             <SidebarTrigger />
                             {/* Page Header */}
                             {header && (
-                                <div className="px-6 py-4">{header}</div>
+                                <div className="px-2 md:px-6 py-4 truncate">
+                                    {header}
+                                </div>
                             )}
                         </div>
-                        <div className="flex items-center gap-3">
-                            <div className="text-right">
-                                <p className="text-sm font-medium">
+                        <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                            <div className="text-right hidden sm:block">
+                                <p className="text-sm font-medium truncate max-w-[120px] md:max-w-[200px]">
                                     {user.name}
                                 </p>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-xs text-muted-foreground truncate max-w-[120px] md:max-w-[200px]">
                                     {user.email}
                                 </p>
                             </div>
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                            <div className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-primary text-xs md:text-sm font-medium text-primary-foreground">
                                 {user.name.charAt(0)}
                             </div>
                         </div>
                     </header>
 
-                    {/* Main Content */}
-                    <main className="p-6">{children}</main>
+                    {/* Main Content - Responsive padding */}
+                    <main className="p-3 md:p-6">{children}</main>
                 </div>
             </SidebarInset>
         </SidebarProvider>

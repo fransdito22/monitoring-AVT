@@ -52,7 +52,7 @@ export function StatisticCards({ summary }: { summary?: DashboardSummary }) {
     ] as const;
 
     return (
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat) => {
                 const Icon = stat.icon;
                 return (
@@ -60,17 +60,17 @@ export function StatisticCards({ summary }: { summary?: DashboardSummary }) {
                         key={stat.title}
                         className="rounded-xl border shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                     >
-                        <CardContent className="p-6">
+                        <CardContent className="p-4 md:p-6">
                             <div className="flex items-start justify-between gap-4">
                                 <div
                                     className={cn(
-                                        "rounded-xl p-3",
+                                        "rounded-xl p-2 md:p-3",
                                         stat.bg,
                                         "border border-white/10"
                                     )}
                                 >
                                     <Icon
-                                        className={cn("h-5 w-5", stat.color)}
+                                        className={cn("h-4 w-4 md:h-5 md:w-5", stat.color)}
                                     />
                                 </div>
                             </div>
@@ -80,12 +80,12 @@ export function StatisticCards({ summary }: { summary?: DashboardSummary }) {
                             </p>
 
                             <div className="mt-2 flex items-baseline gap-3">
-                                <h3 className="text-3xl font-bold leading-none">
+                                <h3 className="text-2xl md:text-3xl font-bold leading-none">
                                     {stat.value}
                                 </h3>
                             </div>
 
-                            <p className="mt-2 text-sm text-muted-foreground">
+                            <p className="mt-2 text-xs md:text-sm text-muted-foreground">
                                 {stat.description}
                             </p>
                         </CardContent>

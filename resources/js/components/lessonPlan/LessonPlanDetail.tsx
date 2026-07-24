@@ -25,10 +25,9 @@ const SCORE = ["-", "1", "2", "3", "4", "5"];
 export default function LessonPlanDetail({ lessonPlan }: Props) {
     return (
         <div className="space-y-6">
-            console.log("LessonPlanDetail", lessonPlan);
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Detail Lesson Plan</h1>
+                    <h1 className="text-3xl font-bold">Detail Sesi</h1>
 
                     <p className="text-muted-foreground">
                         Informasi lengkap hasil sesi terapi.
@@ -111,34 +110,56 @@ export default function LessonPlanDetail({ lessonPlan }: Props) {
                 </CardHeader>
 
                 <CardContent>
-                    {lessonPlan.home_program?.length ? (
-                        <div className="space-y-4">
-                            {lessonPlan.home_program.map((item, i) => (
-                                <div key={i}>
-                                    <p className="font-medium">{item.title}</p>
+                    {(() => {
+                        const raw = lessonPlan.home_program as unknown;
+                        const homePrograms: import("@/types/lessonPlan").HomeExercise[] =
+                            Array.isArray(raw)
+                                ? raw
+                                : typeof raw === "string"
+                                ? raw
+                                      .split("\n")
+                                      .map((line: string) => line.trim())
+                                      .filter(Boolean)
+                                      .map((title: string) => ({
+                                          title,
+                                          instruction: "",
+                                          frequency: "",
+                                      }))
+                                : [];
 
-                                    <p className="text-sm text-muted-foreground">
-                                        {item.instruction}
-                                    </p>
+                        return homePrograms.length ? (
+                            <div className="space-y-4">
+                                {homePrograms.map(
+                                    (
+                                        item: import("@/types/lessonPlan").HomeExercise,
+                                        i: number
+                                    ) => (
+                                        <div key={i}>
+                                            <p className="font-medium">
+                                                {item.title}
+                                            </p>
 
-                                    <Badge className="mt-2">
-                                        {item.frequency}
-                                    </Badge>
+                                            <p className="text-sm text-muted-foreground">
+                                                {item.instruction}
+                                            </p>
 
-                                    {i !==
-                                        (lessonPlan.home_program
-                                            ? lessonPlan.home_program.length - 1
-                                            : 0) && (
-                                        <Separator className="mt-4" />
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="text-muted-foreground">
-                            Tidak ada Home Program.
-                        </p>
-                    )}
+                                            <Badge className="mt-2">
+                                                {item.frequency}
+                                            </Badge>
+
+                                            {i !== homePrograms.length - 1 && (
+                                                <Separator className="mt-4" />
+                                            )}
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        ) : (
+                            <p className="text-muted-foreground">
+                                Tidak ada Home Program.
+                            </p>
+                        );
+                    })()}
                 </CardContent>
             </Card>
             {/* Aktivitas */}

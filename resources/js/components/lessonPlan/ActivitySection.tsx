@@ -8,6 +8,8 @@ import ActivityItem from "./ActivityItem";
 interface Props {
     form: any;
 
+    errors?: Record<string, string>;
+
     addActivity: () => void;
 
     removeActivity: (index: number) => void;
@@ -17,6 +19,7 @@ interface Props {
 
 export default function ActivitySection({
     form,
+    errors = {},
     addActivity,
     removeActivity,
     updateActivity,
@@ -33,6 +36,10 @@ export default function ActivitySection({
             </CardHeader>
 
             <CardContent className="space-y-5">
+                {errors.activities && (
+                    <p className="text-sm text-red-500">{errors.activities}</p>
+                )}
+
                 {form.data.activities.map((activity: any, index: number) => (
                     <ActivityItem
                         key={index}

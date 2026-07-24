@@ -1,22 +1,8 @@
-import {
-    Calendar,
-    Clock3,
-    Stethoscope,
-    User,
-} from "lucide-react";
+import { Calendar, Clock3, Stethoscope, User } from "lucide-react";
 
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -24,11 +10,13 @@ import { Separator } from "@/components/ui/separator";
 interface PatientInformationProps {
     form?: any;
     schedules: any[];
+    errors?: Record<string, string>;
 }
 
 export default function PatientInformation({
     form,
     schedules,
+    errors = {},
 }: PatientInformationProps) {
     const selectedSchedule = schedules.find(
         (schedule) => schedule.id === Number(form?.data?.schedule_id)
@@ -95,10 +83,7 @@ export default function PatientInformation({
                             Patient ID #{patient?.id ?? "-"}
                         </p>
 
-                        <Badge
-                            variant="secondary"
-                            className="mt-2"
-                        >
+                        <Badge variant="secondary" className="mt-2">
                             Scheduled
                         </Badge>
                     </div>
@@ -117,19 +102,13 @@ export default function PatientInformation({
                     <InfoItem
                         icon={<Calendar className="h-4 w-4" />}
                         label="Therapy Date"
-                        value={
-                            selectedSchedule.schedule_date ??
-                            "-"
-                        }
+                        value={selectedSchedule.schedule_date ?? "-"}
                     />
 
                     <InfoItem
                         icon={<Clock3 className="h-4 w-4" />}
                         label="Therapy Time"
-                        value={
-                            selectedSchedule.schedule_time ??
-                            "-"
-                        }
+                        value={selectedSchedule.schedule_time ?? "-"}
                     />
                 </div>
             </CardContent>
@@ -143,11 +122,7 @@ interface InfoItemProps {
     value: React.ReactNode;
 }
 
-function InfoItem({
-    icon,
-    label,
-    value,
-}: InfoItemProps) {
+function InfoItem({ icon, label, value }: InfoItemProps) {
     return (
         <div className="flex items-center justify-between rounded-xl border bg-muted/30 p-3">
             <div className="flex items-center gap-3">
@@ -155,14 +130,10 @@ function InfoItem({
                     {icon}
                 </div>
 
-                <span className="text-sm text-muted-foreground">
-                    {label}
-                </span>
+                <span className="text-sm text-muted-foreground">{label}</span>
             </div>
 
-            <span className="text-sm font-medium text-right">
-                {value}
-            </span>
+            <span className="text-sm font-medium text-right">{value}</span>
         </div>
     );
 }

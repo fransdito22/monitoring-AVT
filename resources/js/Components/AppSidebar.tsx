@@ -136,7 +136,15 @@ export function AppSidebar() {
             : "praktisi";
 
     const menuItems = items[roleKey] ?? [];
-    const profileUrl = route("profile.edit");
+
+    let profileUrl = "/";
+    if (user?.role === "admin") {
+        profileUrl = route("admin.profile");
+    } else if (user?.role === "praktisi_avt") {
+        profileUrl = route("therapist.profile");
+    } else if (user?.role === "orang_tua") {
+        profileUrl = route("profile.orangtua.edit");
+    }
 
     const initials = user?.name
         ?.split(" ")

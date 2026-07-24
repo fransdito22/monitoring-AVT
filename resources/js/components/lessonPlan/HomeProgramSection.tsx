@@ -14,6 +14,7 @@ import HomeProgramItem from "./HomeProgramItem";
 
 interface Props {
     form: any;
+    errors?: Record<string, string>;
     addExercise: () => void;
     removeExercise: (index: number) => void;
     updateExercise: (index: number, field: any, value: string) => void;
@@ -21,6 +22,7 @@ interface Props {
 
 export default function HomeProgramSection({
     form,
+    errors = {},
     addExercise,
     removeExercise,
     updateExercise,
@@ -46,6 +48,9 @@ export default function HomeProgramSection({
             </CardHeader>
 
             <CardContent className="space-y-5">
+                {errors.home_program && (
+                    <p className="text-sm text-red-500">{errors.home_program}</p>
+                )}
                 {form.data.home_program.map((item: any, index: number) => (
                     <HomeProgramItem
                         key={index}
@@ -57,5 +62,5 @@ export default function HomeProgramSection({
                 ))}
             </CardContent>
         </Card>
-    );
+    )
 }

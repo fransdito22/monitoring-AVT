@@ -222,11 +222,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| PROFILE PRAKTISI
+| PROFILE
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:praktisi_avt'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
@@ -238,11 +238,16 @@ Route::middleware(['auth', 'role:praktisi_avt'])->group(function () {
         ->name('profile.destroy');
 });
 
-/*
-|--------------------------------------------------------------------------
-| PROFILE ORANG TUA
-|--------------------------------------------------------------------------
-*/
+Route::middleware(['auth', 'role:praktisi_avt'])->group(function () {
+    Route::get('/profile-praktisi', [ProfileController::class, 'edit'])
+        ->name('therapist.profile');
+
+    Route::patch('/profile-praktisi', [ProfileController::class, 'update'])
+        ->name('therapist.profile.update');
+
+    Route::delete('/profile-praktisi', [ProfileController::class, 'destroy'])
+        ->name('therapist.profile.destroy');
+});
 
 Route::middleware(['auth', 'role:orang_tua'])->group(function () {
 
@@ -254,6 +259,18 @@ Route::middleware(['auth', 'role:orang_tua'])->group(function () {
 
     Route::delete('/profile-orangtua', [ProfileController::class, 'destroy'])
         ->name('profile.orangtua.destroy');
+});
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    Route::get('/profile-admin', [ProfileController::class, 'edit'])
+        ->name('admin.profile');
+
+    Route::patch('/profile-admin', [ProfileController::class, 'update'])
+        ->name('admin.profile.update');
+
+    Route::delete('/profile-admin', [ProfileController::class, 'destroy'])
+        ->name('admin.profile.destroy');
 });
 
 require __DIR__ . '/auth.php';

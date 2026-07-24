@@ -11,6 +11,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { ClipboardCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import type { Evaluation } from "@/types/lessonPlan";
 
@@ -21,6 +22,7 @@ interface Props {
         };
         setData: (key: string, value: any) => void;
     };
+    errors?: Record<string, string>;
 }
 
 const SCORE_OPTIONS = [
@@ -82,7 +84,7 @@ const getScoreLabel = (score: number | null | undefined) => {
     }
 };
 
-export default function EvaluationSection({ form }: Props) {
+export default function EvaluationSection({ form, errors = {} }: Props) {
     const evaluation = form.data.evaluation;
 
     const updateField = (field: keyof Evaluation, value: number) => {
@@ -102,46 +104,76 @@ export default function EvaluationSection({ form }: Props) {
             </CardHeader>
 
             <CardContent className="space-y-6">
-                {FIELDS.map(({ key, label }) => (
-                    <div key={key} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                            <Label>{label}</Label>
+                {FIELDS.map(({ key, label }) => {
+                    const errorKey = `evaluation.${key}`;
+                    const hasError = Boolean(errors[errorKey]);
 
-                            <Badge variant="secondary">
-                                {getScoreLabel(evaluation[key])}
-                            </Badge>
+                    return (
+                        <div key={key} className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <Label
+                                    className={cn(hasError && "text-red-500")}
+                                >
+                                    {label}
+                                    <span className="text-red-500 ml-1">*</span>
+                                </Label>
+
+                                <Badge variant="secondary">
+                                    {getScoreLabel(evaluation[key])}
+                                </Badge>
+                            </div>
+
+                            <Select
+                                value={
+                                    evaluation[key] != null
+                                        ? String(evaluation[key])
+                                        : ""
+                                }
+                                onValueChange={(value) =>
+                                    updateField(key, Number(value))
+                                }
+                            >
+                                <SelectTrigger
+                                    className={cn(
+                                        "h-12",
+                                        hasError &&
+                                            "border-red-500 focus:ring-red-500"
+                                    )}
+                                >
+                                    <SelectValue placeholder="Pilih nilai" />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    {SCORE_OPTIONS.map((score) => (
+                                        <SelectItem
+                                            key={score.value}
+                                            value={String(score.value)}
+                                        >
+                                            {score.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+                            {hasError && (
+                                <p className="text-sm text-red-500">
+                                    {errors[errorKey]}
+                                </p>
+                            )}
                         </div>
-
-                        <Select
-                            value={
-                                evaluation[key] != null
-                                    ? String(evaluation[key])
-                                    : ""
-                            }
-                            onValueChange={(value) =>
-                                updateField(key, Number(value))
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Pilih nilai" />
-                            </SelectTrigger>
-
-                            <SelectContent>
-                                {SCORE_OPTIONS.map((score) => (
-                                    <SelectItem
-                                        key={score.value}
-                                        value={String(score.value)}
-                                    >
-                                        {score.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                ))}
+                    );
+                })}
 
                 <div className="space-y-2">
-                    <Label>Recommendation</Label>
+                    <Label
+                        className={cn(
+                            Boolean(errors["evaluation.recommendation"]) &&
+                                "text-red-500"
+                        )}
+                    >
+                        Recommendation
+                        <span className="text-red-500 ml-1">*</span>
+                    </Label>
 
                     <Textarea
                         rows={4}
@@ -153,7 +185,17 @@ export default function EvaluationSection({ form }: Props) {
                                 recommendation: e.target.value,
                             })
                         }
+                        className={cn(
+                            Boolean(errors["evaluation.recommendation"]) &&
+                                "border-red-500 focus:ring-red-500"
+                        )}
                     />
+
+                    {errors["evaluation.recommendation"] && (
+                        <p className="text-sm text-red-500">
+                            {errors["evaluation.recommendation"]}
+                        </p>
+                    )}
                 </div>
             </CardContent>
         </Card>

@@ -14,6 +14,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface Schedule {
     id: number;
@@ -35,9 +36,15 @@ interface Props {
     form: any;
 
     schedules: Schedule[];
+
+    errors?: Record<string, string>;
 }
 
-export default function SessionInformation({ form, schedules }: Props) {
+export default function SessionInformation({
+    form,
+    schedules,
+    errors = {},
+}: Props) {
     const selectedSchedule = schedules.find(
         (schedule) => schedule.id === Number(form.data.schedule_id)
     );
@@ -55,7 +62,15 @@ export default function SessionInformation({ form, schedules }: Props) {
                 {/* Schedule */}
 
                 <div className="space-y-2">
-                    <Label htmlFor="schedule_id">Therapy Schedule</Label>
+                    <Label
+                        htmlFor="schedule_id"
+                        className={cn(
+                            Boolean(errors["schedule_id"]) && "text-red-500"
+                        )}
+                    >
+                        Therapy Schedule
+                        <span className="text-red-500 ml-1">*</span>
+                    </Label>
 
                     <Select
                         value={form.data.schedule_id?.toString() ?? ""}
@@ -63,7 +78,14 @@ export default function SessionInformation({ form, schedules }: Props) {
                             form.setData("schedule_id", Number(value))
                         }
                     >
-                        <SelectTrigger id="schedule_id" className="h-12">
+                        <SelectTrigger
+                            id="schedule_id"
+                            className={cn(
+                                "h-12",
+                                Boolean(errors["schedule_id"]) &&
+                                    "border-red-500 focus:ring-red-500"
+                            )}
+                        >
                             <SelectValue placeholder="Select therapy schedule" />
                         </SelectTrigger>
 
@@ -94,13 +116,27 @@ export default function SessionInformation({ form, schedules }: Props) {
                             )}
                         </SelectContent>
                     </Select>
+
+                    {errors["schedule_id"] && (
+                        <p className="text-sm text-red-500">
+                            {errors["schedule_id"]}
+                        </p>
+                    )}
                 </div>
 
                 {/* Date */}
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <Label>Session Date</Label>
+                        <Label
+                            className={cn(
+                                Boolean(errors["session_date"]) &&
+                                    "text-red-500"
+                            )}
+                        >
+                            Session Date
+                            <span className="text-red-500 ml-1">*</span>
+                        </Label>
 
                         <Input
                             type="date"
@@ -108,11 +144,28 @@ export default function SessionInformation({ form, schedules }: Props) {
                             onChange={(e) =>
                                 form.setData("session_date", e.target.value)
                             }
+                            className={cn(
+                                Boolean(errors["session_date"]) &&
+                                    "border-red-500 focus:ring-red-500"
+                            )}
                         />
+                        {errors["session_date"] && (
+                            <p className="text-sm text-red-500">
+                                {errors["session_date"]}
+                            </p>
+                        )}
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Session Number</Label>
+                        <Label
+                            className={cn(
+                                Boolean(errors["session_number"]) &&
+                                    "text-red-500"
+                            )}
+                        >
+                            Session Number
+                            <span className="text-red-500 ml-1">*</span>
+                        </Label>
 
                         <Input
                             type="number"
@@ -124,7 +177,16 @@ export default function SessionInformation({ form, schedules }: Props) {
                                     Number(e.target.value)
                                 )
                             }
+                            className={cn(
+                                Boolean(errors["session_number"]) &&
+                                    "border-red-500 focus:ring-red-500"
+                            )}
                         />
+                        {errors["session_number"] && (
+                            <p className="text-sm text-red-500">
+                                {errors["session_number"]}
+                            </p>
+                        )}
                     </div>
                 </div>
 

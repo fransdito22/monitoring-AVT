@@ -60,6 +60,7 @@ export type TherapyShowProps = {
     statistics: TherapyStatistics;
     chartData: TherapyChartPoint[];
     insights: TherapyInsights;
+    sessionEvaluationChart: SessionEvaluationChartData[];
     tabs: {
         lessonPlans: TherapyLessonPlan[];
         articulationReports: TherapyArticulationReport[];
@@ -88,6 +89,14 @@ export interface LingSixSound {
     sound: string;
     level: number;
     note?: string | null;
+}
+
+export interface SessionEvaluationChartData {
+    session: string;
+    listening: number;
+    speech: number;
+    language: number;
+    attention: number;
 }
 
 export interface TherapyLessonPlan {

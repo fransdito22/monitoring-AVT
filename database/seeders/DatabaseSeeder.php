@@ -10,10 +10,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            ParentSeeder::class,
             PatientSeeder::class,
-
-            // Seeding tabel relasi (urutan sesuai FK)
             ScheduleSeeder::class,
             LessonPlanSeeder::class,
             LessonActivitySeeder::class,

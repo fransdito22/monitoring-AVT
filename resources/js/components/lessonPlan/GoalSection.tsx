@@ -1,4 +1,5 @@
 import { Target, Flag } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import {
     Card,
@@ -13,9 +14,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface Props {
     form: any;
+    errors?: Record<string, string>;
 }
 
-export default function GoalSection({ form }: Props) {
+export default function GoalSection({ form, errors = {} }: Props) {
     return (
         <Card className="rounded-2xl shadow-sm">
             <CardHeader>
@@ -31,7 +33,12 @@ export default function GoalSection({ form }: Props) {
 
             <CardContent className="space-y-6">
                 <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
+                    <Label
+                        className={cn(
+                            "flex items-center gap-2",
+                            errors.long_term_goal && "text-red-500"
+                        )}
+                    >
                         <Flag className="h-4 w-4" />
                         Long Term Goal
                     </Label>
@@ -44,11 +51,24 @@ Meningkatkan kemampuan mendengar percakapan tanpa bantuan visual."
                         onChange={(e) =>
                             form.setData("long_term_goal", e.target.value)
                         }
+                        className={cn(
+                            errors.long_term_goal && "border-red-500"
+                        )}
                     />
+
+                    {errors.long_term_goal && (
+                        <p className="text-sm text-red-500">
+                            {errors.long_term_goal}
+                        </p>
+                    )}
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Today's Goal</Label>
+                    <Label
+                        className={cn(errors.short_term_goal && "text-red-500")}
+                    >
+                        Today's Goal
+                    </Label>
 
                     <Textarea
                         rows={4}
@@ -58,7 +78,16 @@ Pasien mampu mengidentifikasi suara /m/ dan /u/ secara konsisten."
                         onChange={(e) =>
                             form.setData("short_term_goal", e.target.value)
                         }
+                        className={cn(
+                            errors.short_term_goal && "border-red-500"
+                        )}
                     />
+
+                    {errors.short_term_goal && (
+                        <p className="text-sm text-red-500">
+                            {errors.short_term_goal}
+                        </p>
+                    )}
                 </div>
             </CardContent>
         </Card>
